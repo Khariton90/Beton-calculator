@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/Khariton90/Beton-calculator/static/css/main.bce6d410.css",
-    "main.js": "/Khariton90/Beton-calculator/static/js/main.17f19fb3.js",
-    "static/js/787.28cb0dcd.chunk.js": "/Khariton90/Beton-calculator/static/js/787.28cb0dcd.chunk.js",
-    "static/media/truckmixerwhite.jpg": "/Khariton90/Beton-calculator/static/media/truckmixerwhite.5d90e6b43f351f13174b.jpg",
-    "static/media/pin.png": "/Khariton90/Beton-calculator/static/media/pin.520530caedce90c48fad.png",
-    "index.html": "/Khariton90/Beton-calculator/index.html",
-    "main.bce6d410.css.map": "/Khariton90/Beton-calculator/static/css/main.bce6d410.css.map",
-    "main.17f19fb3.js.map": "/Khariton90/Beton-calculator/static/js/main.17f19fb3.js.map",
-    "787.28cb0dcd.chunk.js.map": "/Khariton90/Beton-calculator/static/js/787.28cb0dcd.chunk.js.map"
+    "main.css": "/Beton-calculator/static/css/main.bce6d410.css",
+    "main.js": "/Beton-calculator/static/js/main.f265b119.js",
+    "static/js/787.28cb0dcd.chunk.js": "/Beton-calculator/static/js/787.28cb0dcd.chunk.js",
+    "static/media/truckmixerwhite.jpg": "/Beton-calculator/static/media/truckmixerwhite.5d90e6b43f351f13174b.jpg",
+    "static/media/pin.png": "/Beton-calculator/static/media/pin.520530caedce90c48fad.png",
+    "index.html": "/Beton-calculator/index.html",
+    "main.bce6d410.css.map": "/Beton-calculator/static/css/main.bce6d410.css.map",
+    "main.f265b119.js.map": "/Beton-calculator/static/js/main.f265b119.js.map",
+    "787.28cb0dcd.chunk.js.map": "/Beton-calculator/static/js/787.28cb0dcd.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.bce6d410.css",
-    "static/js/main.17f19fb3.js"
+    "static/js/main.f265b119.js"
   ]
 }
