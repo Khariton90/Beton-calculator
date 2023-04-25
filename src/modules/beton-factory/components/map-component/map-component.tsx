@@ -62,7 +62,7 @@ function MapComponent({ dnone }: MapComponentProps): JSX.Element {
       dispatch(getDelivery({
         ...delivery,
         distance: distance,
-        to: panel.routePanel.state._data.to ? panel.routePanel.state._data.to.join(',') : null,
+        to: panel.routePanel.state._data.to ? panel.routePanel.state._data.to.toString() : null,
         price: distance && distance <= MAX_DELIVERY_DISTANCE ? distancePrice[distance] : null
       }))
     }
