@@ -1,17 +1,22 @@
 {
   "files": {
-    "main.css": "/Beton-calculator/static/css/main.bce6d410.css",
-    "main.js": "/Beton-calculator/static/js/main.f265b119.js",
-    "static/js/787.28cb0dcd.chunk.js": "/Beton-calculator/static/js/787.28cb0dcd.chunk.js",
-    "static/media/truckmixerwhite.jpg": "/Beton-calculator/static/media/truckmixerwhite.5d90e6b43f351f13174b.jpg",
+    "main.css": "/Beton-calculator/static/css/main.830bd939.css",
+    "main.js": "/Beton-calculator/static/js/main.d62b1b39.js",
+    "static/media/stone2.png": "/Beton-calculator/static/media/stone2.1160cdce8d0c54493a94.png",
+    "static/media/sand.png": "/Beton-calculator/static/media/sand.cdcd8645ee28def58ba1.png",
+    "static/media/craiyon_172634_door_and_calculator.png": "/Beton-calculator/static/media/craiyon_172634_door_and_calculator.03e1cabd96d38c723038.png",
+    "static/media/cutt.png": "/Beton-calculator/static/media/cutt.5711053505ba9011511b.png",
+    "static/media/craiyon_171437_beton_auto_mixer.png": "/Beton-calculator/static/media/craiyon_171437_beton_auto_mixer.da435d71cd6f2904ba2a.png",
+    "static/media/handle-beton.png": "/Beton-calculator/static/media/handle-beton.7d60c97c14ec3a38f73f.png",
+    "static/media/armstrong.png": "/Beton-calculator/static/media/armstrong.ce85f7fb34fadc8c83df.png",
+    "static/media/jpg": "/Beton-calculator/static/media/4b09e1f9d1d344f4a5230fda2783490e.675b49d9999649084f6c.jpg",
     "static/media/pin.png": "/Beton-calculator/static/media/pin.520530caedce90c48fad.png",
     "index.html": "/Beton-calculator/index.html",
-    "main.bce6d410.css.map": "/Beton-calculator/static/css/main.bce6d410.css.map",
-    "main.f265b119.js.map": "/Beton-calculator/static/js/main.f265b119.js.map",
-    "787.28cb0dcd.chunk.js.map": "/Beton-calculator/static/js/787.28cb0dcd.chunk.js.map"
+    "main.830bd939.css.map": "/Beton-calculator/static/css/main.830bd939.css.map",
+    "main.d62b1b39.js.map": "/Beton-calculator/static/js/main.d62b1b39.js.map"
   },
   "entrypoints": [
-    "static/css/main.bce6d410.css",
-    "static/js/main.f265b119.js"
+    "static/css/main.830bd939.css",
+    "static/js/main.d62b1b39.js"
   ]
 }
