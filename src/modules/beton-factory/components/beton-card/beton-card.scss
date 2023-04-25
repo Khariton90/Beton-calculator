@@ -1,0 +1,139 @@
+@import '../../../../variables';
+
+.beton-card {
+  flex: 33.3333%;
+  max-width: 300px;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: left;
+  background: url(https://images.unsplash.com/photo-1521459467264-802e2ef3141f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80);
+  margin: 0 15px;
+  box-shadow: 2px 3px 20px #252525;
+  transition: all 0.1s ease;
+
+  .radio-label {
+    color: #FFF;
+    text-shadow: 2px 2px 2px #333;
+    padding: 2px 0;
+  }
+
+  .description {
+    background-color: rgba(255,255,255, 0.6);
+    border-radius: 5px;
+    padding: 10px;
+  }
+
+  & .title {
+    font-size: 1rem;
+  }
+
+  & .beton-card-form {
+    padding: 20px 0;
+  }
+
+  & .fieldset {
+    & label {
+      position: relative;
+      margin-right: 8px;
+      width: 45px;
+      height: 31px;
+      z-index: 2;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #FFF;
+
+      & input[type=radio] {
+        position: absolute;
+        left: 0;
+        top: 0;
+        margin: 0;
+        width: 0;
+        height: 0;
+        &::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 44px;
+          height: 30px;
+          border: 1px solid #ccc;
+        }
+      }
+
+      & input[type=radio]:checked {
+        &::before {
+          border: 1px solid #555;
+        }
+      }
+    }
+
+    & label:has(input[type=radio]:checked) {
+      background-color: $basic-color;
+    }
+  }
+
+  & .fieldset:not(:disabled) {
+    & input[type=radio] {
+      &::before {
+        cursor: pointer;
+      }
+
+      &:hover::before {
+        border: 1px solid #777;
+      }
+    }
+  }
+
+  .total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .qty {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+
+    & input {
+      width: 35px;
+      text-align: center;
+      padding: 0;
+      margin: 0;
+    }
+
+    & .minus,
+    & .plus {
+      width: 28px;
+      height: 28px;
+      display: block;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: $basic-color;
+      border-radius: 3px;
+
+    }
+  }
+}
+
+.beton-card:not(.blur) {
+  & .minus,
+  & .plus {
+    cursor: pointer;
+  }
+}
+
+.beton-card.blur {
+  transition: all 0.1s ease;
+  filter: blur(3px);
+  box-shadow: none;
+}
+
+.beton-card-price {
+  color: #FFF;
+  font-weight: 600;
+  text-shadow: 2px 2px 2px #252525;
+}

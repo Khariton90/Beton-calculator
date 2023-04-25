@@ -1,25 +1,6 @@
 import { createAction } from "@reduxjs/toolkit";
+import { AuthorizationStatus } from "../constants";
 
-export const changeAmountBeton = createAction('data/changeAmountBeton', (value) => ({
+export const changeAuthStatus = createAction('root/changeAuthStatus', (value: AuthorizationStatus) => ({
   payload: value
-}));
-
-export const changeRemaind = createAction('data/changeRemaind', (value) => ({
-  payload: value
-}));
-
-export const getDelivery = createAction('data/getDelivery', (value) => ({
-  payload: value
-}));
-
-export const addBeton  = createAction('data/addBeton', (value) => ({
-  payload: value
-}));
-
-export const addMixer  = createAction('data/addMixer', (value) => ({
-  payload: value
-}));
-
-export const removeMixer  = createAction('data/removeMixer', (value) => ({
-  payload: value
-}));
+}))

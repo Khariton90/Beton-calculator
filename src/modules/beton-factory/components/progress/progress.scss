@@ -1,0 +1,41 @@
+@import '../../../../variables';
+
+.progress {
+  height: 100%;
+  width: 40px;
+  position: absolute;
+  left: 50px;
+  top: 0;
+  display: flex;
+    align-items: flex-start;
+}
+
+.progress-bar {
+  background-color: rgba(0, 0, 0, 0.27);
+  width: 8px;
+  height: 60vh;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 150px;
+
+  & .progress-bar__active {
+    position: absolute;
+    width: inherit;
+    left: 0;
+    top: 0;
+    background-color: $basic-color;
+    transition: height .5s ease;
+  }
+
+  & .dot {
+    width: 20px;
+    height: 20px;
+    background-color: $basic-color;
+    border-radius: 5px;
+  }
+
+}

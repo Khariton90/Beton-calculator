@@ -1,10 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { dataReducer } from '../modules/beton-factory';
-import { rootReducer } from './root-reducer/root-reducer';
+import { dataReducer } from './data-reducer/data-reducer'
 
 export const store = configureStore({
   reducer: {
-    rootReducer,
     dataReducer
   },
 });

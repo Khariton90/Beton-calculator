@@ -1,0 +1,19 @@
+.shop-beton-select {
+  min-width: 440px;
+}
+
+.pump-features-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pump-features {
+  display: flex;
+  gap: 20px;
+
+  & .pump-toggle {
+    flex: 1;
+    width: 100%;
+  }
+}

@@ -1,0 +1,47 @@
+@import '../../../../variables';
+
+.beton-table {
+  margin-bottom: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  color: #444;
+
+  & .total {
+    align-self: flex-end;
+    font-size: 1.5rem;
+  }
+
+  & .notification {
+    max-width: 800px;
+    align-self: center;
+    font-weight: 500;
+  }
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.pdf-link {
+  width: 140px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $basic-color;
+  border-radius: 5px;
+  text-decoration: none;
+  color:#444;
+  transition: all .2s ease;
+  align-self: center;
+  border: none;
+
+  &:hover {
+    color: #FFF;
+    box-shadow: 2px 2px 6px #777;
+  }
+}
