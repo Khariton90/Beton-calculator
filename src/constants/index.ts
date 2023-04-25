@@ -1,7 +1,7 @@
 export enum AppRoute {
-  Main = '/',
-  Login = '/login',
-  BetonFactory = '/beton-factory',
+  Main = '/Beton-calculator',
+  Login = '/Beton-calculator/login',
+  BetonFactory = '/Beton-calculator/beton-factory',
   NotFound = '*'
 }
 
