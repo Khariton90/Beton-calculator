@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/Beton-calculator/static/css/main.830bd939.css",
-    "main.js": "/Beton-calculator/static/js/main.ae81e571.js",
+    "main.css": "/Beton-calculator/static/css/main.4fa73cac.css",
+    "main.js": "/Beton-calculator/static/js/main.fe23f3db.js",
     "static/media/stone2.png": "/Beton-calculator/static/media/stone2.1160cdce8d0c54493a94.png",
     "static/media/sand.png": "/Beton-calculator/static/media/sand.cdcd8645ee28def58ba1.png",
     "static/media/craiyon_172634_door_and_calculator.png": "/Beton-calculator/static/media/craiyon_172634_door_and_calculator.03e1cabd96d38c723038.png",
@@ -12,11 +12,11 @@
     "static/media/jpg": "/Beton-calculator/static/media/4b09e1f9d1d344f4a5230fda2783490e.675b49d9999649084f6c.jpg",
     "static/media/pin.png": "/Beton-calculator/static/media/pin.520530caedce90c48fad.png",
     "index.html": "/Beton-calculator/index.html",
-    "main.830bd939.css.map": "/Beton-calculator/static/css/main.830bd939.css.map",
-    "main.ae81e571.js.map": "/Beton-calculator/static/js/main.ae81e571.js.map"
+    "main.4fa73cac.css.map": "/Beton-calculator/static/css/main.4fa73cac.css.map",
+    "main.fe23f3db.js.map": "/Beton-calculator/static/js/main.fe23f3db.js.map"
   },
   "entrypoints": [
-    "static/css/main.830bd939.css",
-    "static/js/main.ae81e571.js"
+    "static/css/main.4fa73cac.css",
+    "static/js/main.fe23f3db.js"
   ]
 }
