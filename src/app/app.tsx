@@ -7,17 +7,17 @@ import { useAppSelector } from '../hooks/hooks';
 import { MainPage } from '../pages/main-page/main-page';
 
 export function App() {
-  const autorizationStatus = useAppSelector(({rootReducer}) => rootReducer.authorizationStatus);
+  const autorizationStatus = useAppSelector(({ rootReducer }) => rootReducer.authorizationStatus);
   return (
     <div className="App">
       <Routes>
         <Route path={AppRoute.Main} element={<PrivateRoute autorizationStatus={autorizationStatus}>
-            <MainPage />
-          </PrivateRoute>}/>
-          <Route path={AppRoute.BetonFactory} element={<PrivateRoute autorizationStatus={autorizationStatus}>
-            <BetonFactoryPage />
-          </PrivateRoute>}/>
-          <Route path={AppRoute.Login} element={<LoginPage />}/>
+          <MainPage />
+        </PrivateRoute>} />
+        <Route path={AppRoute.BetonFactory} element={<PrivateRoute autorizationStatus={autorizationStatus}>
+          <BetonFactoryPage />
+        </PrivateRoute>} />
+        <Route path={AppRoute.Login} element={<LoginPage />} />
       </Routes>
     </div>
   );

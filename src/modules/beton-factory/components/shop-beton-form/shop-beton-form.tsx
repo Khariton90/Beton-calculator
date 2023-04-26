@@ -1,7 +1,7 @@
-import { TextField, FormControlLabel, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { TextField, FormControlLabel, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { ChangeEvent, memo, useCallback, useEffect, useState } from 'react';
 import { ShopBetonSelect } from '../shop-beton-select/shop-beton-select';
-import { BetonPriceList, BetonTypes, DEFAULT_FILING_HOURS, concreteType, typesBetonSelect, typesPumpBetonSelect } from '../../consts/mocks';
+import { BetonPriceList, BetonTypes, DEFAULT_FILING_HOURS, antiFreeze, concreteType, typesBetonSelect, typesPumpBetonSelect } from '../../consts/mocks';
 import { changeAmountBeton, changeConcreteBeton, getAmountPriceList } from '../../store/action';
 import { RemaindType, getFillingHours, getMixersCount, priceFormat } from '../../utils/utils';
 import MapComponent from '../map-component/map-component';
@@ -40,10 +40,12 @@ const columns: readonly Column[] = [
 function ShopBetonForm(): JSX.Element {
   const [form, setForm] = useState(['', '', '', '']);
   const [qty, setQty] = useState<null | number>(null);
-  const [checked, setChecked] = useState(true);
+  const [checked, setChecked] = useState(false);
   const [remaind, setRemaind] = useState<RemaindType>();
   const [rentPupm, setRentPump] = useState(false);
-
+  const [betonTypesList, setBetonTypesList] = useState<BetonSelect[]>(typesBetonSelect);
+  const [antifreezeState, setAntifreezeState] = useState(false);
+  const [antifreezeValue, setAntifreezeValue] = useState(0);
 
   const dispatch = useAppDispatch();
   const concreteBeton = useAppSelector(({ dataReducer }) => dataReducer.concreteBeton);
@@ -51,7 +53,6 @@ function ShopBetonForm(): JSX.Element {
   const amountBeton = useAppSelector(({ dataReducer }) => dataReducer.amountBeton);
   const shopMixers = useAppSelector(({ dataReducer }) => dataReducer.shopMixers);
   const amountPriceList = useAppSelector(({ dataReducer }) => dataReducer.amountPriceList);
-  const [betonTypesList, setBetonTypesList] = useState<BetonSelect[]>(typesBetonSelect);
 
   const onChangeType = (id: number, value: string) => {
     if (value === BetonTypes.Pump || value === BetonTypes.WithoutPump) {
@@ -73,6 +74,15 @@ function ShopBetonForm(): JSX.Element {
     setChecked((prev) => (prev = evt.target.checked));
   };
 
+  const handleChangeAntifreeze = (evt: ChangeEvent<HTMLInputElement>) => {
+    setAntifreezeState((prev) => (prev = evt.target.checked));
+  };
+
+  const handleChangeSelect = (event: SelectChangeEvent) => {
+    setAntifreezeValue((prev) =>  (prev = Number(event.target.value)));
+  };
+
+
   const priceListKey = form.join('');
   const betonItem = BetonPriceList[priceListKey];
 
@@ -80,7 +90,7 @@ function ShopBetonForm(): JSX.Element {
     if (betonItem && qty) {
       dispatch(getAmountPriceList({
         ...amountPriceList,
-        [BetonTotal.Beton]: betonItem * qty
+        [BetonTotal.Beton]: (betonItem + antifreezeValue) * qty
       }))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -104,11 +114,17 @@ function ShopBetonForm(): JSX.Element {
     if (concreteBeton === BetonTypes.Pump) {
       setBetonTypesList((prevList) => prevList = typesPumpBetonSelect);
     }
-  }, [concreteBeton])
+  }, [concreteBeton]);
 
   useEffect(() => {
     setRemaind((prev) => (prev = getMixersCount(amountBeton, shopMixers)));
   }, [amountBeton, shopMixers]);
+
+  useEffect(() => {
+    if (!antifreezeState) {
+      setAntifreezeValue((prev) => prev = 0);
+    }
+  }, [antifreezeState]);
 
   return (
     <div className="shop-beton">
@@ -133,13 +149,39 @@ function ShopBetonForm(): JSX.Element {
         {remaind && remaind.remaind - amountBeton > 0 ? <p style={{ color: "green" }}>
           <b>Остаток свободного бетона {remaind.remaind - amountBeton} м<sup>3</sup></b></p> : null}
 
-        <p><FormControlLabel
+        <div className="shop-beton-antifreeze">
+          <FormControlLabel 
+            disabled={!amountBeton}
+            value="End"
+            control={<Switch color="primary" checked={antifreezeState} onChange={handleChangeAntifreeze} />}
+            label={"Антифриз"}
+            labelPlacement="end"
+          />
+          {
+            antifreezeState ? 
+            <div className="shop-beton-select">
+            <FormControl style={{width: 150}}>
+              <InputLabel>{"Антифриз"}</InputLabel>
+              <Select
+                defaultValue={""}
+                label={"Антифриз"}
+                onChange={handleChangeSelect}
+              >
+                {antiFreeze.map((item) => <MenuItem value={item.price} key={item.id}>{item.label}
+                </MenuItem>)}
+              </Select>
+            </FormControl>
+          </div> : null
+          } 
+        </div>
+        <div>
+          <FormControlLabel disabled={!amountBeton}
           value="End"
           control={<Switch color="primary" checked={checked} onChange={handleChange} />}
           label={!checked ? "Расчет доставки" : "Скрыть карту"}
           labelPlacement="end"
         />
-        </p>
+        </div>
 
         <MapComponent dnone={checked} />
 
@@ -148,7 +190,7 @@ function ShopBetonForm(): JSX.Element {
           control={<Switch color="primary" />}
           label="Аренда бетононасоса"
           labelPlacement="end"
-          disabled={concreteBeton === "0"}
+          disabled={concreteBeton === "-1" || !amountBeton}
           checked={rentPupm}
           onChange={() => setRentPump((prev) => prev = !prev)}
         />
@@ -183,8 +225,8 @@ function ShopBetonForm(): JSX.Element {
                   <TableRow hover role="checkbox" tabIndex={-1}>
                     <TableCell width={260} align={"left"}><b>{form.find((el) => el === '') ? null : form.join('').replace('P', 'П').replace('225', '22,5')}</b></TableCell>
                     <TableCell width={170} align={"left"}>{qty ? `${qty} м3` : <b style={{ color: 'red' }}>Необходимо выбрать Количество</b>}</TableCell>
-                    <TableCell align={"right"}>{betonItem && qty ? priceFormat(betonItem) : null}</TableCell>
-                    <TableCell align={"right"}>{betonItem && qty ? priceFormat(betonItem * qty) : null}</TableCell>
+                    <TableCell align={"right"}>{betonItem && qty ? priceFormat((betonItem + antifreezeValue)) : null}</TableCell>
+                    <TableCell align={"right"}>{betonItem && qty ? priceFormat((betonItem + antifreezeValue) * qty) : null}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

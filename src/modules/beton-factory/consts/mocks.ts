@@ -302,11 +302,6 @@ export const frostPumpResistList: BetonItemType[] = [
 
 export const antiFreeze = [
   {
-    id: 0,
-    label: 0,
-    price: 0
-  },
-  {
     id: 1,
     label: -5,
     price: 154
