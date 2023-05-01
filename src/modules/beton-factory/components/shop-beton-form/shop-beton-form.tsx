@@ -126,6 +126,15 @@ function ShopBetonForm(): JSX.Element {
     }
   }, [antifreezeState]);
 
+  useEffect(() => {
+    if (!rentPupm && amountPriceList.features) {
+      dispatch(getAmountPriceList({
+        ...amountPriceList,
+        [BetonTotal.Features]: 0
+      }))
+    }
+  }, [amountPriceList, dispatch, rentPupm]);
+
   return (
     <div className="shop-beton">
       <h2 style={{ color: "#333" }}>Расчет бетона</h2>
@@ -239,17 +248,17 @@ function ShopBetonForm(): JSX.Element {
               <p>Ближайший завод: {deliveryStore.from}</p>
               <p>Адрес доставки: {deliveryStore.to}</p>
               <p>Подача: {deliveryStore.distance ? <>
-                <span>{DEFAULT_FILING_HOURS}ч. + </span>
-                <span>{getFillingHours(deliveryStore.distance) - DEFAULT_FILING_HOURS}ч. = </span>
-                <span>{getFillingHours(deliveryStore.distance)}ч.</span></> :
+                <span>{DEFAULT_FILING_HOURS} + </span>
+                <span>{getFillingHours(deliveryStore.distance) - DEFAULT_FILING_HOURS} = </span>
+                <span>{getFillingHours(deliveryStore.distance)} ч.</span></> :
                 null}</p>
               <div>
                 Количество миксеров:
                 <br />
                 <p>{remaind ? Object.entries(remaind.mixers).map(([key, value]) => value ? <span key={key}>
-                  <span >Миксер {key} м3: {value} шт.</span><br /></span> : null) : null}</p>
+                  <span >Миксер {key} м<sup>3</sup>: {value} шт.</span><br /></span> : null) : null}</p>
               </div>
-              <p>Расстояние до адреса {deliveryStore.distance} км</p>
+              <p>Расстояние до адреса: {deliveryStore.distance} км</p>
               <p>Стоимость доставки: {priceFormat(deliveryStore.price * remaind.remaind)}</p>
 
             </div>

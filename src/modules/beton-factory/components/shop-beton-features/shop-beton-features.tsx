@@ -50,7 +50,7 @@ export function ShopBetonFeatures(): JSX.Element {
   const [compensator, setCompensator] = useState<boolean>(false);
   const [hydrolotok, setHydrolotok] = useState<boolean>(false);
   const [hydrolotokCount, setHydrolotokCount] = useState<number | string>("1");
-  const [value, setValue] = useState<PumpArrow>(PumpArrow.TwentyFour);
+  const [value, setValue] = useState<PumpArrow | null>(null);
 
   const id = useId();
   const dispatch = useAppDispatch();
