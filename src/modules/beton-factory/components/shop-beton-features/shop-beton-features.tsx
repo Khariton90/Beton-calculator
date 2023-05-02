@@ -19,7 +19,7 @@ interface Column {
 }
 
 const columns: readonly Column[] = [
-  { id: 'name', label: 'Название', minWidth: 170 },
+  { id: 'name', label: 'Название', minWidth: 200 },
   { id: 'qty', label: 'Количество', minWidth: 100 },
   {
     id: 'price',

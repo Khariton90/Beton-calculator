@@ -74,3 +74,12 @@
     max-width: 150px;
   }
 }
+
+.total, .features-total {
+  margin: 1rem 0;
+
+  & span {
+    text-decoration: underline;
+    text-decoration-color: #1976d2;
+  }
+}

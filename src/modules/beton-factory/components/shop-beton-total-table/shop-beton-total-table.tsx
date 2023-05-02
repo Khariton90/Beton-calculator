@@ -12,7 +12,7 @@ interface Column {
 }
 
 const columns: readonly Column[] = [
-  { id: 'name', label: 'Название', minWidth: 170 },
+  { id: 'name', label: 'Название', minWidth: 200 },
   { id: 'qty', label: 'Количество', minWidth: 100 },
   { id: 'price', label: 'Цена', minWidth: 170, align: 'right' },
   { id: 'amount', label: 'Всего', minWidth: 170, align: 'right' },
@@ -54,11 +54,10 @@ export function ShopBetonTotalTable({ qty, betonItem, form, antifreezeValue, rem
                   ))}
                 </TableRow>
               </TableHead>
-
               <TableBody>
                 <TableRow hover role="checkbox" tabIndex={-1}>
-                  <TableCell width={260} align={"left"}><b>{form.find((el) => el === '') ? null : form.join('').replace('P', 'П').replace('225', '22,5')}</b></TableCell>
-                  <TableCell width={170} align={"left"}>{qty ? `${qty} м3` : <b style={{ color: 'red' }}>Необходимо выбрать Количество</b>}</TableCell>
+                  <TableCell align={"left"}><b>{form.find((el) => el === '') ? null : form.join('').replace('P', 'П').replace('225', '22,5')}</b></TableCell>
+                  <TableCell align={"left"}>{qty ? `${qty} м3` : <b style={{ color: 'red' }}>Необходимо выбрать Количество</b>}</TableCell>
                   <TableCell align={"right"}>{betonItem && qty ? priceFormat((betonItem + antifreezeValue)) : null}</TableCell>
                   <TableCell align={"right"}>{betonItem && qty ? priceFormat((betonItem + antifreezeValue) * qty) : null}</TableCell>
                 </TableRow>
@@ -80,8 +79,8 @@ export function ShopBetonTotalTable({ qty, betonItem, form, antifreezeValue, rem
               null}</li>
               <li><span className="title-type">Количество миксеров:</span> <br/> {remaind ? Object.entries(remaind.mixers).map(([key, value]) => value ? <span key={key}>
                 <span >{key} м<sup>3</sup> - {value} шт.</span><br /></span> : null) : null}</li>
-              <li><span className="title-type">Расстояние до адреса:</span> {deliveryStore.distance} км</li>
-              <li><span className="title-type">Стоимость доставки:</span> {priceFormat(deliveryStore.price * remaind.remaind)}</li>
+              <li><span className="title-type">Расстояние до адреса:</span> {deliveryStore.distance} км.</li>
+              <li><span className="title-type">Стоимость доставки:</span> {priceFormat(deliveryStore.price * remaind.remaind)}.</li>
             </ul>
           </div>
           {<p style={{ fontSize: "28px" }}><b>Итого:</b> {priceFormat(Object.values(amountPriceList).reduce((el, acc) => el += acc))}</p>}

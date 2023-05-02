@@ -121,7 +121,7 @@ function ShopBetonForm(): JSX.Element {
         <ShopBetonMixerSelect />
         <TextField
           style={{ width: 150 }}
-          inputProps={{ min: 1, max: 200 }}
+          inputProps={{ min: 1, max: 200, step: 0.1 }}
           id="outlined-number"
           label="Объем"
           type="number"
@@ -132,7 +132,7 @@ function ShopBetonForm(): JSX.Element {
         />
       </form>
       <div>
-        {remaind && remaind.remaind - amountBeton > 0 ? <p style={{ color: "green" }}>
+        {remaind && remaind.remaind - amountBeton > 0 ? <p style={{ color: "#1976d2" }}>
           <b>Остаток свободного бетона {(remaind.remaind - amountBeton).toFixed(1)} м<sup>3</sup></b></p> : null}
 
         <div className="shop-beton-antifreeze">
