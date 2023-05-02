@@ -35,8 +35,42 @@
   }
 }
 
+.shop-delivery-body {
+  max-width: 500px;
+
+  & ul {
+    margin: 10px 0 40px 0;
+    padding: 0;
+
+    & li {
+      padding: 3px 0;
+
+      & .title-type {
+        text-decoration: underline;
+        text-decoration-color: #1976d2;
+      }
+
+      &::marker {
+        color: #1976d2;
+      }
+    }
+  }
+}
+
 .shop-beton-antifreeze {
   & .shop-beton-select {
     margin: 14px 0;
+  }
+}
+
+.shop-beton-title {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+  color: #333;
+  font-size: 1.2rem;
+
+  & img {
+    max-width: 150px;
   }
 }

@@ -23,7 +23,6 @@ export default function ShopBetonMixerSelect() {
   const handleChange = (event: SelectChangeEvent<typeof personName>) => {
     const {target: { value }} = event;
     setPersonName((prev) => typeof value === 'string' ? prev = value.split(',').slice(0,3) : prev = value.slice(0,3));
-
   };
 
   useEffect(() => {

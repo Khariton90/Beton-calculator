@@ -105,7 +105,7 @@ export function ShopBetonFeatures(): JSX.Element {
           </FormControl>
         </div>
         <TextField
-          style={{ width: 300 }}
+          style={{ width: "100%" }}
           inputProps={{ min: 1, max: 300 }}
           id="outlined-number"
           label="Дополнительные шланги (м.п.)"
@@ -137,7 +137,7 @@ export function ShopBetonFeatures(): JSX.Element {
           />
 
           {hydrolotok ? <TextField
-            style={{ width: "300px" }}
+            style={{ width: "160px" }}
             inputProps={{ min: 1, max: 200 }}
             id="hidro-lotok-number"
             label="Количество"
@@ -159,7 +159,7 @@ export function ShopBetonFeatures(): JSX.Element {
             <TableHead>
               <TableRow>
                 <TableCell align="center" colSpan={4}>
-                  Услуги
+                  <span style={{ fontSize: '20px' }}>Услуги</span>
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -175,6 +175,16 @@ export function ShopBetonFeatures(): JSX.Element {
               </TableRow>
             </TableHead>
             <TableBody>
+              {
+                purmArrowPrice !== null && delivery?.distance ?
+                  <TableRow hover role="checkbox" tabIndex={-1}>
+                    <TableCell align={"left"}><b>Стоимость работы АБН, с НДС:</b></TableCell>
+                    <TableCell align={"left"}>{getFillingHours(delivery.distance)} ч.</TableCell>
+                    <TableCell align={"right"}>{priceFormat(purmArrowPrice)}</TableCell>
+                    <TableCell align={"right"}>{priceFormat(purmArrowPrice * getFillingHours(delivery.distance))}</TableCell>
+                  </TableRow>
+                  : null
+              }
               {
                 hosesPrice ?
                   <TableRow hover role="checkbox" tabIndex={-1}>
@@ -202,16 +212,6 @@ export function ShopBetonFeatures(): JSX.Element {
                     <TableCell align={"left"}>{hydrolotokCount} ед.</TableCell>
                     <TableCell align={"right"}>{priceFormat(hydrolotokPrice)}</TableCell>
                     <TableCell align={"right"}>{priceFormat(hydrolotokPrice * Number(hydrolotokCount))}</TableCell>
-                  </TableRow>
-                  : null
-              }
-              {
-                purmArrowPrice !== null && delivery?.distance ?
-                  <TableRow hover role="checkbox" tabIndex={-1}>
-                    <TableCell align={"left"}><b>Стоимость работы АБН, с НДС:</b></TableCell>
-                    <TableCell align={"left"}>{getFillingHours(delivery.distance)} ч.</TableCell>
-                    <TableCell align={"right"}>{priceFormat(purmArrowPrice)}</TableCell>
-                    <TableCell align={"right"}>{priceFormat(purmArrowPrice * getFillingHours(delivery.distance))}</TableCell>
                   </TableRow>
                   : null
               }
