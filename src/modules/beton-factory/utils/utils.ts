@@ -12,22 +12,18 @@ export type RemaindType = {
 export const getMixersCount = (total: number, mixerList: number[]): RemaindType => {
   const mixers: { [key: string]: number } = mixerList.reduce((obj, el) => ({ ...obj, [el.toString()]: 0 }), {});
   let remaind = 0;
-
-  // const max = Math.max(...mixerList);
-  const min = Math.min(...mixerList);
+  let count = 0;
+  const sortMixerList = mixerList.slice().sort((a, b) => b - a);
 
   while (total && remaind < total) {
-    const [maxValue, middleValue] = mixerList.slice().sort((a,b) => b-a);
-   if(maxValue > remaind && remaind) {
-      remaind += maxValue;
-      mixers[maxValue] = mixers[maxValue] + 1;
-    } else if (middleValue > remaind && remaind) {
-      remaind += maxValue;
-      mixers[middleValue] = mixers[middleValue] + 1; 
-    } else {
-      remaind += min;
-      mixers[min] = mixers[min] + 1;
-    }    
+    let value = Math.max(...sortMixerList);
+    mixers[value] = mixers[value] += 1;
+    remaind += value;
+    count = total - remaind;
+
+    if (count < value && sortMixerList.length > 1) {
+      sortMixerList.shift();
+    }
   }
 
   return {
@@ -43,5 +39,5 @@ export const getFillingHours = (distance: number) => {
     return hours;
   }
 
-  return DEFAULT_FILING_HOURS;  
+  return DEFAULT_FILING_HOURS;
 }
