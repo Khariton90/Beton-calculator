@@ -1,4 +1,4 @@
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Fade } from "@mui/material";
 import { DEFAULT_FILING_HOURS } from "../../consts/mocks";
 import { priceFormat, getFillingHours, RemaindType } from "../../utils/utils";
 import { useAppSelector } from "../../../../hooks/hooks";
@@ -33,7 +33,8 @@ export function ShopBetonTotalTable({ qty, betonItem, form, antifreezeValue, rem
   return (
     <div className="total">
       {
-        qty ?
+        qty && betonItem ?
+        <Fade in={qty > 0} style={{ transitionDelay: qty ? '300ms' : '0ms' }}>
           <TableContainer sx={{ maxHeight: 440, width: "100%" }}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
@@ -63,7 +64,7 @@ export function ShopBetonTotalTable({ qty, betonItem, form, antifreezeValue, rem
                 </TableRow>
               </TableBody>
             </Table>
-          </TableContainer> : null
+          </TableContainer></Fade> : null
       }
       {deliveryStore?.price && remaind?.remaind ?
         <div className="shop-delivery">

@@ -1,4 +1,4 @@
-import { TextField, FormControlLabel, Switch, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { TextField, FormControlLabel, Switch, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Grow, Fade } from '@mui/material';
 import { ChangeEvent, memo, useCallback, useEffect, useState } from 'react';
 import { ShopBetonSelect } from '../shop-beton-select/shop-beton-select';
 import { BetonPriceList, BetonTypes, antiFreeze, concreteType, typesBetonSelect, typesPumpBetonSelect } from '../../consts/mocks';
@@ -41,7 +41,7 @@ function ShopBetonForm(): JSX.Element {
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const handleChangeQty = useCallback(debounce(({target}: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeQty = useCallback(debounce(({ target }: ChangeEvent<HTMLInputElement>) => {
     setQty((prev) => (prev = Number(target.value)));
     dispatch(changeAmountBeton(Number(target.value)));
   }, 500), [shopMixers])
@@ -132,10 +132,15 @@ function ShopBetonForm(): JSX.Element {
         />
       </form>
       <div>
-        {remaind && remaind.remaind - amountBeton > 0 ? <p style={{ color: "#1976d2" }}>
-          <b>Остаток свободного бетона {(remaind.remaind - amountBeton).toFixed(1)} м<sup>3</sup></b></p> : null}
+        {
+          remaind && remaind.remaind - amountBeton > 0 ?
+          <Fade in={remaind && remaind.remaind - amountBeton > 0} style={{ transitionDelay: remaind && remaind.remaind - amountBeton > 0 ? '300ms' : '0ms' }}>
+            <p style={{ color: "#1976d2" }}>
+              <b>Остаток свободного бетона {(remaind.remaind - amountBeton).toFixed(1)} м<sup>3</sup></b>
+            </p></Fade> : null
+        }
 
-        <div className="shop-beton-antifreeze">
+        <div className="shop-beton-antifreeze" style={{marginTop: remaind && remaind.remaind - amountBeton > 0 ? "0px" : '55.3px'}}>
           <FormControlLabel
             disabled={!amountBeton}
             value="End"
@@ -145,19 +150,26 @@ function ShopBetonForm(): JSX.Element {
           />
           {
             antifreezeState ?
-              <div className="shop-beton-select">
-                <FormControl style={{ width: 150 }}>
-                  <InputLabel>{"Антифриз"}</InputLabel>
-                  <Select
-                    defaultValue={""}
-                    label={"Антифриз"}
-                    onChange={handleChangeSelect}
-                  >
-                    {antiFreeze.map((item) => <MenuItem value={item.price} key={item.id}>{item.label}
-                    </MenuItem>)}
-                  </Select>
-                </FormControl>
-              </div> : null
+              <Grow
+                in={antifreezeState}
+                style={{ transformOrigin: '0 0 0' }}
+                {...(antifreezeState ? { timeout: 400 } : {})}
+              >
+                {<div className="shop-beton-select">
+                  <FormControl style={{ width: 150 }}>
+                    <InputLabel>{"Антифриз"}</InputLabel>
+                    <Select
+                      defaultValue={""}
+                      label={"Антифриз"}
+                      onChange={handleChangeSelect}
+                    >
+                      {antiFreeze.map((item) => <MenuItem value={item.price} key={item.id}>{item.label}
+                      </MenuItem>)}
+                    </Select>
+                  </FormControl>
+                </div>}
+              </Grow>
+              : null
           }
         </div>
         <div>
@@ -168,7 +180,9 @@ function ShopBetonForm(): JSX.Element {
             labelPlacement="end"
           />
         </div>
+
         <MapComponent dnone={checked} />
+
         <FormControlLabel
           value="End"
           control={<Switch color="primary" />}
