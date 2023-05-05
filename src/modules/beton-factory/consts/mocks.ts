@@ -164,6 +164,7 @@ export enum BetonTypes {
   W6 = "W6",
   W8 = "W8",
   W10 = "W10",
+  W12 = "W12",
   F50 = "F50",
   F75 = "F75",
   F100 = "F100",
@@ -313,6 +314,10 @@ export const waterResistList: BetonItemType[] = [
   {
     id: 5,
     value: BetonTypes.W10
+  },
+  {
+    id: 6,
+    value: BetonTypes.W12
   },
 ];
 
