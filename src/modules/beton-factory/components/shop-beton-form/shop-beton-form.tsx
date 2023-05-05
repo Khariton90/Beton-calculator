@@ -12,6 +12,8 @@ import { BetonSelect, BetonTotal } from '../../types/types';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/hooks';
 import { ShopBetonTotalTable } from '../shop-beton-total-table/shop-beton-total-table';
 import petrovichImg from '../../../../assets/petrovich.svg';
+import { ShopBetonSwitchList } from '../shop-beton-switch-list/shop-beton-switch-list';
+import { ShopBetonPdfMake } from '../shop-beton-pdf-make/shop-beton-pdf-make';
 import './shop-beton-form.scss';
 
 const COMPENSATOR_PRICE = 1750;
@@ -31,12 +33,12 @@ function ShopBetonForm(): JSX.Element {
   const [hydrolotok, setHydrolotok] = useState<boolean>(false);
   const [hydrolotokCount, setHydrolotokCount] = useState<number | string>("1");
 
-  const dispatch = useAppDispatch();
   const concreteBeton = useAppSelector(({ dataReducer }) => dataReducer.concreteBeton);
   const deliveryStore = useAppSelector(({ dataReducer }) => dataReducer.delivery);
   const amountBeton = useAppSelector(({ dataReducer }) => dataReducer.amountBeton);
   const shopMixers = useAppSelector(({ dataReducer }) => dataReducer.shopMixers);
   const amountPriceList = useAppSelector(({ dataReducer }) => dataReducer.amountPriceList);
+  const dispatch = useAppDispatch();
 
   const onChangeType = (id: number, value: string) => {
     if (value === BetonTypes.Pump || value === BetonTypes.WithoutPump) {
@@ -145,14 +147,15 @@ function ShopBetonForm(): JSX.Element {
               }}
               onChange={handleChangeQty}
             />
-            {!betonItem ? 
-            <>
-            <FormHelperText>Выберите вид бетона
-              <br/>
-              {concreteBeton !== BetonTypes.UnknownPump && form.join('') ? <span>{form.join('').replace('P', 'П').replace('225', '22.5')} отсутствует</span> : null}
-            </FormHelperText>
-            </> : null}
-            
+            {!betonItem ?
+              <>
+                <FormHelperText>Выберите вид бетона
+                  <br />
+                  {concreteBeton !== BetonTypes.UnknownPump && form.join('') ?
+                    <span style={{ color: 'red' }}>Бетон {form.join('').replace('P', 'П').replace('225', '22.5')} <br />в ассортименте отсутствует</span> : null}
+                </FormHelperText>
+              </> : null}
+
           </div>
           <Fade in={remaind && remaind.remaind - amountBeton > 0} style={{ transitionDelay: remaind && remaind.remaind - amountBeton > 0 ? '300ms' : '0ms' }}>
             <div className="remaind-title">
@@ -164,7 +167,9 @@ function ShopBetonForm(): JSX.Element {
           </Fade>
         </div>
       </form>
+
       <div className="switch-block">
+
         <div className="pump-toggle">
           <FormControlLabel
             value="End"
@@ -174,6 +179,8 @@ function ShopBetonForm(): JSX.Element {
             labelPlacement="end"
           />
         </div>
+
+
         <div className="hydrolotok-field" >
           <FormControlLabel
             value="End"
@@ -203,6 +210,9 @@ function ShopBetonForm(): JSX.Element {
               />
             </Grow> : null}
         </div>
+
+
+
         <div className="shop-beton-antifreeze">
           <FormControlLabel
             disabled={!amountBeton}
@@ -235,6 +245,7 @@ function ShopBetonForm(): JSX.Element {
               : null
           }
         </div>
+
         <div className="switch-delivery" style={{ marginBottom: !checked ? '20px' : '0' }}>
           <FormControlLabel disabled={!amountBeton}
             value="End"
@@ -243,6 +254,9 @@ function ShopBetonForm(): JSX.Element {
             labelPlacement="end"
           />
         </div>
+
+        <ShopBetonSwitchList amountBeton={amountBeton} />
+
         <MapComponent dnone={checked} />
         <FormControlLabel
           value="End"
@@ -267,7 +281,7 @@ function ShopBetonForm(): JSX.Element {
         remaind={remaind}
       />
 
-      {/* <ShopBetonPdfMake /> */}
+      <ShopBetonPdfMake />
     </div>
   )
 }

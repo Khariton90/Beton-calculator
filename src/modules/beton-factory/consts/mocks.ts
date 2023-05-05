@@ -392,17 +392,17 @@ export const antiFreeze = [
   {
     id: 2,
     label: -10,
-    price: 230
+    price: 227
   },
   {
     id: 3,
     label: -15,
-    price: 345
+    price: 340
   },
   {
     id: 4,
     label: -20,
-    price: 460
+    price: 453
   }
 ];
 
