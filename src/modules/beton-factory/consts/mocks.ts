@@ -341,6 +341,10 @@ export const FrostResistList: BetonItemType[] = [
     id: 6,
     value: BetonTypes.F250
   },
+  {
+    id: 7,
+    value: BetonTypes.F300
+  },
 ];
 
 export const frostPumpResistList: BetonItemType[] = [
@@ -367,6 +371,10 @@ export const frostPumpResistList: BetonItemType[] = [
   {
     id: 6,
     value: BetonTypes.F250
+  },
+  {
+    id: 7,
+    value: BetonTypes.F300
   },
 ];
 
