@@ -1,14 +1,12 @@
-import { FormControl, InputLabel, Select, MenuItem, TextField, FormControlLabel, Switch, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, FormHelperText } from "@mui/material";
+import { FormControl, InputLabel, Select, MenuItem, TextField, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, FormHelperText } from "@mui/material";
 import { useEffect, useId, useState } from "react";
 import { getFillingHours, priceFormat } from "../../utils/utils";
-import { arrowPrice, lengthPumpArrow, } from "../../consts/mocks";
+import { BetonTypes, arrowPrice, lengthPumpArrow, } from "../../consts/mocks";
 import { BetonTotal, PumpArrow } from "../../types/types";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/hooks";
 import { getAmountPriceList } from "../../store/action";
 
 const HOSES_PRICE = 350;
-const COMPENSATOR_PRICE = 1750;
-const HYDROLOTOK = 3000;
 
 interface Column {
   id: 'name' | 'qty' | 'price' | 'amount';
@@ -45,23 +43,23 @@ const getPrice = (array: Array<[number | null, number | null | undefined]>): num
   return totalFeatures;
 }
 
-export function ShopBetonFeatures(): JSX.Element {
-  const [hosesCount, setHosesCount] = useState<number>();
-  const [compensator, setCompensator] = useState<boolean>(false);
-  const [hydrolotok, setHydrolotok] = useState<boolean>(false);
-  const [hydrolotokCount, setHydrolotokCount] = useState<number | string>("1");
-  const [value, setValue] = useState<PumpArrow | null>(null);
+type ShopBetonFeaturesProps = {
+  compensatorPrice: number | null;
+  hydrolotokPrice: number | null;
+  hydrolotokCount: number | string;
+}
 
+export function ShopBetonFeatures({ compensatorPrice, hydrolotokPrice, hydrolotokCount }: ShopBetonFeaturesProps): JSX.Element {
+  const [hosesCount, setHosesCount] = useState<number | null>(null);
+  const [value, setValue] = useState<PumpArrow | null>(null);
   const id = useId();
   const dispatch = useAppDispatch();
   const delivery = useAppSelector(({ dataReducer }) => dataReducer.delivery);
   const amountPriceList = useAppSelector(({ dataReducer }) => dataReducer.amountPriceList);
+  const concreteBeton = useAppSelector(({ dataReducer }) => dataReducer.concreteBeton);
 
   const hosesPrice = hosesCount ? hosesCount * HOSES_PRICE : null;
-  const compensatorPrice = compensator ? COMPENSATOR_PRICE : null;
-  const hydrolotokPrice = hydrolotok ? HYDROLOTOK : null;
   const purmArrowPrice = value ? arrowPrice[value] : null;
-
   const getHours = delivery?.distance ? getFillingHours(delivery?.distance) : 0;
 
   const price = getPrice(
@@ -84,96 +82,76 @@ export function ShopBetonFeatures(): JSX.Element {
       [BetonTotal.Features]: price
     }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, price])
+  }, [dispatch, price]);
+
+  useEffect(() => {
+    if (concreteBeton === BetonTypes.WithoutPump) {
+      setValue((prev) => (prev = null));
+      setHosesCount((prev) => (prev = null));
+    }
+  }, [concreteBeton, value]);
 
   return (
     <div className="pump-features-wrapper">
-      <div className="pump-features">
-        <div className="shop-beton-select">
-          <FormControl fullWidth disabled={!delivery?.distance}>
-            <InputLabel>{lengthPumpArrow.title}</InputLabel>
-            <Select
-              labelId={id}
-              id={id}
-              value={value ? value : ''}
-              label={lengthPumpArrow.title}
-              onChange={handleChange}
-            >
-              {lengthPumpArrow.options.map((item) => <MenuItem key={item.id} value={item.value}>{item.value}</MenuItem>)}
-            </Select>
-            {!delivery?.distance ? <FormHelperText>Расчитайте доставку на карте</FormHelperText> : null}
-          </FormControl>
-        </div>
-        <TextField
-          style={{ width: "100%" }}
-          inputProps={{ min: 1, max: 300 }}
-          id="outlined-number"
-          label="Дополнительные шланги (м.п.)"
-          type="number"
-          value={hosesCount ? hosesCount : ''}
-          helperText={hosesCount ? "максимальное кол-во 300 м.п." : null}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          onChange={(evt) => setHosesCount(parseInt(evt.target.value))}
-        />
-      </div>
-      <div className="pump-toggle">
-        <FormControlLabel
-          value="End"
-          checked={compensator}
-          control={<Switch color="primary" onChange={(evt) => setCompensator(evt.target.checked)} />}
-          label="Аренда Гасителя"
-          labelPlacement="end"
-        />
-        <br />
-        <div className="hydrolotok-field">
-          <FormControlLabel
-            value="End"
-            checked={hydrolotok}
-            control={<Switch color="primary" onChange={(evt) => setHydrolotok(evt.target.checked)} />}
-            label="Гидролоток"
-            labelPlacement="end"
-          />
+      {
+        concreteBeton === BetonTypes.Pump ?
+          <div className="pump-features">
+            <div className="shop-beton-select">
+              <FormControl fullWidth disabled={!delivery?.distance}>
+                <InputLabel>{lengthPumpArrow.title}</InputLabel>
+                <Select
+                  labelId={id}
+                  id={id}
+                  value={value ? value : ''}
+                  label={lengthPumpArrow.title}
+                  onChange={handleChange}
+                >
+                  {lengthPumpArrow.options.map((item) => <MenuItem key={item.id} value={item.value}>{item.value}</MenuItem>)}
+                </Select>
+                {!delivery?.distance ? <FormHelperText>Расчитайте доставку на карте</FormHelperText> : null}
+              </FormControl>
+            </div>
+            <TextField
 
-          {hydrolotok ? <TextField
-            style={{ width: "160px" }}
-            inputProps={{ min: 1, max: 200 }}
-            id="hidro-lotok-number"
-            label="Количество"
-            type="number"
-            value={hydrolotokCount ? hydrolotokCount : ''}
-            helperText={hydrolotok ? "минимальное 1 ед." : null}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            onChange={(evt) => setHydrolotokCount(parseInt(evt.target.value, 10))}
-          /> : null}
-        </div>
-
-      </div>
+              inputProps={{ min: 1, max: 300 }}
+              id="outlined-number"
+              label="Дополнительные шланги (м.п.)"
+              type="number"
+              value={hosesCount ? hosesCount : ''}
+              helperText={hosesCount ? "максимальное кол-во 300 м.п." : null}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(evt) => setHosesCount(parseInt(evt.target.value))}
+            />
+          </div> : null
+      }
 
       <div className="features-total">
         <TableContainer sx={{ maxHeight: 440 }}>
           <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                <TableCell align="center" colSpan={4}>
-                  <span style={{ fontSize: '20px' }}>Услуги</span>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell
-                    key={column.id}
-                    align={column.align}
-                    style={{ minWidth: column.minWidth }}
-                  >
-                    {column.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
+            {
+              purmArrowPrice || hosesPrice || compensatorPrice || hydrolotokPrice ?
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center" colSpan={4}>
+                      <span style={{ fontSize: '20px' }}>Услуги</span>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    {columns.map((column) => (
+                      <TableCell
+                        key={column.id}
+                        align={column.align}
+                        style={{ minWidth: column.minWidth }}
+                      >
+                        {column.label}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead> : null
+            }
+
             <TableBody>
               {
                 purmArrowPrice !== null && delivery?.distance ?
@@ -198,7 +176,7 @@ export function ShopBetonFeatures(): JSX.Element {
               {
                 compensatorPrice ?
                   <TableRow hover role="checkbox" tabIndex={-1}>
-                    <TableCell align={"left"}><b>Гаситель</b></TableCell>
+                    <TableCell align={"left"}><b>Аренда Гасителя</b></TableCell>
                     <TableCell align={"left"}>1 ед.</TableCell>
                     <TableCell align={"right"}>{priceFormat(compensatorPrice)}</TableCell>
                     <TableCell align={"right"}>{priceFormat(compensatorPrice)}</TableCell>
@@ -208,7 +186,7 @@ export function ShopBetonFeatures(): JSX.Element {
               {
                 hydrolotokPrice && hydrolotokCount ?
                   <TableRow hover role="checkbox" tabIndex={-1}>
-                    <TableCell align={"left"}><b>Гидролоток</b></TableCell>
+                    <TableCell align={"left"}><b>Труба удлинитель</b></TableCell>
                     <TableCell align={"left"}>{hydrolotokCount} ед.</TableCell>
                     <TableCell align={"right"}>{priceFormat(hydrolotokPrice)}</TableCell>
                     <TableCell align={"right"}>{priceFormat(hydrolotokPrice * Number(hydrolotokCount))}</TableCell>

@@ -1,8 +1,8 @@
 import { FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, FormHelperText } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { BetonItemType, MixerItemType } from '../../consts/mocks';
-import './shop-beton-select.scss';
+import { BetonItemType, BetonTypes, MixerItemType } from '../../consts/mocks';
 import { useAppSelector } from '../../../../hooks/hooks';
+import './shop-beton-select.scss';
 
 type ShopBetonSelectProps = {
   id: number;
@@ -15,11 +15,11 @@ const PUMP_TITLE = 'Бетон без бетононасоса';
 const WITHOUT_PUMP_TITLE = 'Бетон под бетононасос';
 
 const formatSelectValue = (value: string) => {
-  if (value === "0") {
+  if (value === BetonTypes.WithoutPump) {
     return PUMP_TITLE;
   }
 
-  if (value === "1") {
+  if (value === BetonTypes.Pump) {
     return WITHOUT_PUMP_TITLE;
   }
 
@@ -49,11 +49,11 @@ export function ShopBetonSelect({ title, options, id, onChangeType }: ShopBetonS
 
   return (
     <div className="shop-beton-select">
-      <FormControl fullWidth disabled={concreteBeton === "-1" && id !== 0}>
-        <InputLabel id={id + title}>{title}</InputLabel>
+      <FormControl fullWidth disabled={concreteBeton === BetonTypes.UnknownPump && id !== 0}>
+        <InputLabel>{title}</InputLabel>
         <Select
-          labelId={id + title}
-          id={id + title}
+          labelId={`${id}-select`}
+          id={`${id}-select`}
           value={value}
           label={title}
           onChange={handleChange}
@@ -64,7 +64,7 @@ export function ShopBetonSelect({ title, options, id, onChangeType }: ShopBetonS
           </MenuItem>
           )}
         </Select>
-        {concreteBeton === "-1" && id !== 0 ? <FormHelperText>Выберите вид бетона</FormHelperText> : null}
+        {concreteBeton === BetonTypes.UnknownPump ? <FormHelperText>Выберите вид бетона</FormHelperText> : null}
       </FormControl>
     </div>
   )

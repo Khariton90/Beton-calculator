@@ -35,3 +35,7 @@ export const changeShopMixer = createAction('data/changeShopMixer', (value) => (
 export const getAmountPriceList = createAction('data/getAmountPriceList', (value) => ({
   payload: value
 }));
+
+export const getBetonFactoryEntity = createAction('data/getBetonFactoryEntity', (value) => ({
+  payload: value
+}));

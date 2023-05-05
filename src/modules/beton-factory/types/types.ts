@@ -75,3 +75,11 @@ export enum BetonTotal {
 export type BetonTotalPrice = {
   [key in BetonTotal]: number;
 };
+
+export type BetonFactory = {
+  beton: string[];
+  pupm: string[];
+  hoses: string[];
+  compensator: string[];
+  hydrolotok:  string[];
+}

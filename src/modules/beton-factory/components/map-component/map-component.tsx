@@ -81,9 +81,15 @@ function MapComponent({ dnone }: MapComponentProps): JSX.Element {
           </RoutePanel>
         </Map>
       </YMaps>
+      {
+        distance ? 
+        <div className="map-footer">
+          <span>Расстояние: {distance} км </span>
+          </div>
+        : null
+      }
     </div>
   );
 }
-
 
 export default memo(MapComponent);
