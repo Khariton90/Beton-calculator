@@ -36,6 +36,14 @@ export const getAmountPriceList = createAction('data/getAmountPriceList', (value
   payload: value
 }));
 
-export const getBetonFactoryEntity = createAction('data/getBetonFactoryEntity', (value) => ({
+export const getBetonServices = createAction('data/getBetonServices', (value) => ({
+  payload: value
+}));
+
+export const getPdfList = createAction('data/getPdfList', (value) => ({
+  payload: value
+}));
+
+export const setDirty = createAction('data/setDirty', (value) => ({
   payload: value
 }));

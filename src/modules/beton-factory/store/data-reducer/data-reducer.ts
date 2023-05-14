@@ -1,5 +1,5 @@
-import { BetonFactory, BetonTotal } from './../../types/types';
-import { getAmountPriceList, getBetonFactoryEntity } from './../action';
+import { BetonTotal, PdfDto, ServiceStore } from './../../types/types';
+import { getAmountPriceList, getBetonServices, getPdfList, setDirty } from './../action';
 import { createReducer } from "@reduxjs/toolkit";
 import { addBeton, addMixer, changeAmountBeton, changeConcreteBeton, changeRemaind, changeShopMixer, getDelivery, removeMixer } from "../action";
 import { TruckItem, Beton, Delivery, BetonTotalPrice } from "../../types/types";
@@ -15,7 +15,9 @@ type DataReducer = {
   concreteBeton: string,
   shopMixers: number[],
   amountPriceList: BetonTotalPrice;
-  betonFactoryEntity: BetonFactory;
+  services: ServiceStore[];
+  pdfList: PdfDto[],
+  dirty: boolean
 }
 
 const PROGRESS_VALUE = 25;
@@ -40,13 +42,9 @@ const initialState: DataReducer = {
     [BetonTotal.Features]: 0,
     [BetonTotal.Delivery]: 0,
   },
-  betonFactoryEntity: {
-    beton: [],
-    pupm: [],
-    hoses: [],
-    compensator:[],
-    hydrolotok:[],
-  }
+  services: [],
+  pdfList: [],
+  dirty: true
 }
 
 const dataReducer = createReducer(initialState, (builder) => {
@@ -90,8 +88,12 @@ const dataReducer = createReducer(initialState, (builder) => {
     state.concreteBeton = action.payload;
   }).addCase(getAmountPriceList, (state, action) => {
     state.amountPriceList = action.payload;
-  }).addCase(getBetonFactoryEntity, (state, action) => {
-    state.betonFactoryEntity = action.payload;
+  }).addCase(getBetonServices, (state, action) => {
+    state.services = action.payload;
+  }).addCase(getPdfList, (state, action) => {
+    state.pdfList = action.payload;
+  }).addCase(setDirty, (state, action) => {
+    state.dirty = action.payload;
   })
 });
 

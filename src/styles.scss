@@ -124,7 +124,7 @@ input::-webkit-inner-spin-button {
     position: absolute;
     left: 0;
     bottom: 0;
-    background-color: #444;
+    background-color: #232934;
     height: 100px;
     width: 100%;
     z-index: -1;
@@ -139,4 +139,12 @@ input::-webkit-inner-spin-button {
 
 .ymaps-2-1-79-route-panel__clear {
   color: #252525;
+}
+
+.css-5ryogn-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked {
+  color: #fc3;
+}
+
+.text-message {
+  color: #17a853;
 }

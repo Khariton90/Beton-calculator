@@ -83,3 +83,43 @@ export type BetonFactory = {
   compensator: string[];
   hydrolotok:  string[];
 }
+
+export type Services = {
+  compensator: number;
+  hydrolotok: number;
+  antifreeze: number;
+  stone: number;
+  fibro: number;
+  masterTop: number;
+  schemaG: number;
+  launcher: number;
+};
+
+export enum ServiceName {
+  Compensator = "compensator",
+  Hydrolotok = "hydrolotok",
+  Antifreeze = "antifreeze",
+  Stone = "stone",
+  Fibro = "fibro",
+  MasterTop = "masterTop",
+  SchemaG = "schemaG",
+  Launcher = "launcher",
+}
+
+export type ServiceSwitch = {
+  id: number;
+  name: ServiceName;
+  label: string;
+  value: number;
+  hintText?: string;
+}
+
+export type ServiceStore = {
+  id: number;
+  name: ServiceName;
+  qty: number;
+  price: number;
+  total: number;
+}
+
+export type PdfDto = string[];

@@ -1,74 +1,45 @@
+
 .shop-beton-switch-list {
-  grid-column: 1/3;
-  padding: 20px 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30px;
-  padding: 60px 0;
-}
-
-.switch-item {
+  padding: 20px 30px;
+  border: 1px solid #ccc;
+  margin: 20px 0;
+  border-radius: 5px;
+  background: url(https://images.unsplash.com/photo-1571824655925-6ec62810a5c0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80) fixed;
+  background-repeat: no-repeat;
+  background-size: 100%;
   position: relative;
-  &:hover {
-    & .hint {
-      display: block;
-    }
-  }
+  overflow: hidden;
 
-  & .hint {
-    text-align: right;
-    padding: 0 3rem;
+  &::before {
+    content: '';
     position: absolute;
-    bottom: 30px;
+    width: 100%;
+    height: 100%;
+    background-color:rgba(255,255,255, 0.7);
     left: 0;
-    width: 85%;
-    display: none;
+    top: 0;
+  }
+ 
+  & .shop-beton-switch-field {
+    flex-direction: row;
+    gap: 20px;
+    margin: 30px 0;
+    position: relative;
 
-    & .hint-text {
+    & .shop-beton-switch-select,
+    & .shop-beton-switch-hydro-count {
       position: absolute;
-      right: 0;
-      top: 30px;
-      background-color: #FFF;
-      max-width: 250px;
-      box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-      display: none;
-      z-index: 2;
-      padding: 15px 20px;
-      text-align: left;
-      min-height: 100px;
-      font-size: .9rem;
-      color: #333;
-      align-items: center;
-
-      &::before {
-        content: '';
-        position: absolute;
-        width: 0;
-        height: 0;
-        top: -12px;
-        right: 60px;
-        border-left: 7px solid transparent;
-        border-right: 7px solid transparent;
-        border-bottom: 12px solid #ccc;
-        opacity: 0.4;
-        z-index: 2;
-      }
-    }
-
-    & svg {
-      width: 18px;
+      background-color:rgba(255,255,255, 0.7);
+      border-radius: 5px;
+      bottom: -20px;
+      left: -10px;
+      width: 120px;
+      z-index: 6;
     }
   }
 
-  & .hint.active {
-    & svg {
-      cursor: pointer;
-    }
+  & .shop-beton-switch-field:not(:last-child) {
+    padding-bottom: 26px;
   }
 
-  & .hint.active:has(svg:hover) {
-    & .hint-text {
-      display: block;
-    }
-  }
 }

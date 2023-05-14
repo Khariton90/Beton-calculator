@@ -41,3 +41,10 @@ export const getFillingHours = (distance: number) => {
 
   return DEFAULT_FILING_HOURS;
 }
+
+export const switchStyle = {
+  borderRadius: 2,
+  "& .MuiSwitch-switchBase.Mui-checked": {
+    color: "#fc3"
+  },
+}

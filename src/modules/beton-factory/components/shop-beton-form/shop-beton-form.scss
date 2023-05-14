@@ -1,26 +1,16 @@
 .shop-beton {
-  padding: 40px 80px;
+  padding: 40px;
   margin: 40px;
   background: rgb(255, 255, 255);
   box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  display: flex;
+  flex-direction: column;
+  width: 1000px;
 }
 
-.shop-beton-form {
-  display: grid;
-  min-width: 360px;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px 40px;
-  margin-bottom: 14px;
-  transition: all .4s ease;
-}
 
 .hydrolotok-field {
-  display: flex;
-  align-items: flex-start;
   position: relative;
-  height: 50px;
-  max-width: 400px;
-  justify-content: space-between;
 }
 
 .pump-features {
@@ -28,16 +18,7 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 20px;
-
     padding-right: 24px;
-  & input,
-  & .shop-beton-select {
-    max-width: 460px;
-  }
-
-  & input {
-    width: 410px;
-  }
 }
 
 .shop-delivery {
@@ -74,12 +55,6 @@
   }
 }
 
-.shop-beton-antifreeze {
-  & .shop-beton-select {
-    margin: 14px 0;
-  }
-}
-
 .shop-beton-title {
   display: flex;
   justify-content: space-between;
@@ -102,8 +77,6 @@
 }
 
 .switch-block {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
 
   & .remaind-title {
     display: flex;
@@ -130,12 +103,7 @@
 }
 
 .shop-beton-antifreeze {
-  display: flex;
   max-width: 400px;
-  height: 60px;
-  & .shop-beton-select {
-    width: 200px!important;
-  }
 }
 
 .weight-field {
@@ -157,4 +125,29 @@
 .total-price {
   text-align: right;
   padding: 20px 0;
+}
+
+.shop-beton-select-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.select-length-pump,
+.hoses-field {
+  width: 300px;
+  background-color: #FFF;
+  border-radius: 5px;
+}
+
+.pumb-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+  padding-bottom: 40px;
+
+  & small {
+    color: #FFF;
+    text-shadow: 2px 2px 1px #222;
+  }
 }

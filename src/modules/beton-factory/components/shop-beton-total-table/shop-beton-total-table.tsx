@@ -1,84 +1,231 @@
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Fade } from "@mui/material";
-import { priceFormat, RemaindType } from "../../utils/utils";
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
+import { BetonTypes, DEFAULT_MAX_ID_VALUE, arrowNewPrice, arrowPriceMoreThanLimit, distancePrice } from "../../consts/mocks"
+import { getFillingHours, priceFormat } from "../../utils/utils"
+import { Delivery, PdfDto, ServiceName, ServiceStore } from "../../types/types";
 import { useAppSelector } from "../../../../hooks/hooks";
-import { ShopBetonDeliveryTotal } from "../shop-beton-delivery-total/shop-beton-delivery-total";
+import { ShopBetonPdfMake } from "../shop-beton-pdf-make/shop-beton-pdf-make";
 
 interface Column {
-  id: 'name' | 'qty' | 'price' | 'amount';
+  id: 'id' | 'name' | 'qty' | 'price' | 'amount';
   label: string;
   minWidth?: number;
-  align?: 'right';
+  align?: 'right' | 'left';
   format?: (value: number) => string;
 }
 
 const columns: readonly Column[] = [
-  { id: 'name', label: 'Название', minWidth: 200 },
-  { id: 'qty', label: 'Количество', minWidth: 100 },
-  { id: 'price', label: 'Цена', minWidth: 170, align: 'right' },
-  { id: 'amount', label: 'Всего', minWidth: 170, align: 'right' },
+  { id: 'id', label: 'Код', },
+  { id: 'name', label: 'Название', },
+  { id: 'qty', label: 'Количество', },
+  {
+    id: 'price',
+    label: 'Цена',
+    align: 'right',
+  },
+  {
+    id: 'amount',
+    label: 'Всего',
+    align: 'right',
+  },
 ];
 
-type ShopBetonTotalTableProps = {
-  qty: null | number;
-  betonItem: number | undefined;
-  form: string[];
-  antifreezeValue: number;
-  remaind: RemaindType | undefined;
+const tableNames = {
+  [ServiceName.Compensator]: "Аренда гасителя",
+  [ServiceName.Hydrolotok]: "Труба-удлинитель",
+  [ServiceName.Antifreeze]: "Антифриз",
+  [ServiceName.Stone]: "Щебень 5-10мм",
+  [ServiceName.Fibro]: "Фиброволокно",
+  [ServiceName.MasterTop]: "«Мастер ТОП»",
+  [ServiceName.SchemaG]: "«Схема Г»",
+  [ServiceName.Launcher]: "Миксер с пусковым раствором",
+};
+
+const arrowNames: { [key: number]: string } = {
+  992271: "Аренда АБН 24-28",
+  992272: "Аренда АБН 32-36",
+  992273: "Аренда АБН 40-42",
+  992274: "Аренда АБН 44-46",
+  992275: "Аренда АБН 48",
+  992276: "Аренда АБН 52",
+  992277: "Аренда АБН 55",
+  992278: "Аренда АБН 58",
+};
+
+
+type PumpDto = {
+  id: number;
+  name: string;
+  qty: string;
+  price: string;
+  total: number;
 }
 
-export function ShopBetonTotalTable({ qty, betonItem, form, antifreezeValue, remaind }: ShopBetonTotalTableProps): JSX.Element {
-  const amountPriceList = useAppSelector(({ dataReducer }) => dataReducer.amountPriceList);
-  const deliveryStore = useAppSelector(({ dataReducer }) => dataReducer.delivery);
-
-  if (!qty || !betonItem) {
-    return <></>;
+const getPumpData = (delivery: Delivery, rentPupmId: number, amountBeton: number): PumpDto => {
+  if (amountBeton >= 71) {
+    return {
+      id: rentPupmId,
+      name: arrowNames[rentPupmId],
+      qty: `${amountBeton} ед.`,
+      price: `${priceFormat(arrowPriceMoreThanLimit[rentPupmId])}/м3`,
+      total: amountBeton * arrowPriceMoreThanLimit[rentPupmId]
+    }
   }
 
-  const betonName = form.find((el) => el === '') ? null : form.join('').replace('P', 'П').replace('225', '22,5');
+  const distance = delivery.distance ? getFillingHours(delivery.distance) : 1;
+
+  return {
+    id: rentPupmId,
+    name: arrowNames[rentPupmId],
+    qty: `${distance} ч.`,
+    price: priceFormat(arrowNewPrice[rentPupmId]),
+    total: arrowNewPrice[rentPupmId] * distance
+  }
+};
+
+function createData(id: number | string, name: string, qty: number, price: number, total: number) {
+  if (!qty || !total) {
+    return [];
+  }
+
+  return [id.toString(), name, `${qty} ед.`, priceFormat(price), priceFormat(total)];
+};
+
+function createDelivery(name: string, value: string) {
+  return [name, value];
+}
+
+type ShopBetonTotalTableProps = {
+  betonId: number;
+  betonItem: number;
+  amountBeton: number;
+  betonName: string;
+  servicesList: ServiceStore[];
+  rentPupmId: number;
+  remaind: number;
+  technologyWashing: number;
+  hoses: number;
+  mixers: { [key: string]: number } | undefined;
+}
+
+export function ShopBetonTotalTable({ betonId, betonItem, amountBeton, betonName, servicesList, rentPupmId, remaind, technologyWashing, hoses, mixers }: ShopBetonTotalTableProps): JSX.Element {
+  const filteredServices = servicesList.filter((item) => item.price);
+  const totalList = filteredServices.length ? filteredServices.reduce((acc, el) => el.total + acc, 0) : 0;
+  const delivery = useAppSelector(({ dataReducer }) => dataReducer.delivery);
+  const fibroItem = filteredServices.find((item) => item.name === ServiceName.Fibro);
+  const costFibroPump = fibroItem ? amountBeton * 350 : 0;
+
+  const concreteBeton = useAppSelector(({ dataReducer }) => dataReducer.concreteBeton);
+
+  if (!delivery) {
+    return <></>
+  }
+
+  if (!delivery?.distance) {
+    return <></>
+  }
+
+  const pumpTotal = rentPupmId ? getPumpData(delivery, rentPupmId, amountBeton).total : 0;
+  const priceDelivery = distancePrice[delivery.distance] * remaind;
+  const hosesTotal = hoses * 350;
+  const totalPrice = concreteBeton === BetonTypes.Pump ?
+    totalList + costFibroPump + priceDelivery + pumpTotal + hosesTotal + technologyWashing + amountBeton * betonItem :
+    totalList + priceDelivery + amountBeton * betonItem;
+
+  const filteredString = filteredServices.map(({ id, name, qty, price, total }) => {
+    const stringID = id >= DEFAULT_MAX_ID_VALUE ? "000000" : id.toString();
+    return [stringID, tableNames[name], `${qty} ед.`, priceFormat(price), priceFormat(total)];
+  });
+
+  const totalHoses = 350 * hoses;
+  const totalBeton = amountBeton * betonItem;
+  const pumpData = pumpTotal ? Object.values(getPumpData(delivery, rentPupmId, amountBeton))
+    .map((item, idx, arr) => idx === arr.length - 1 ? priceFormat(+item) : item.toString()) : [];
+
+  const mixersCountString = JSON.stringify(mixers).replace("}", "").replace("{", "");
+
+  const pdfData: PdfDto[] = [
+    ["Код", "Название", "Кол-во", "Цена", "Всего"],
+    createData(betonId, `Бетон ${betonName.replace('P', 'П').replace('225', '22,5')}`, amountBeton, betonItem, totalBeton),
+    createData(992270, "Доставка бетона", 1, priceDelivery, priceDelivery),
+    pumpData,
+    ...filteredString,
+    concreteBeton === BetonTypes.Pump ? createData("000000", "Технологическая замывка", 1, technologyWashing, technologyWashing) : [],
+    concreteBeton === BetonTypes.Pump ? createData("000000", "Дополнительные шланги", hoses, 350, totalHoses) : [],
+    concreteBeton === BetonTypes.Pump ? createData("000000", "Прокачка бетона с фиброй", amountBeton, 350, costFibroPump) : [],
+    ['', '', '', 'Итого:', priceFormat(totalPrice)]
+  ].filter((el) => el.length);
+
+  const pdfDelivery: string[][] = [
+    createDelivery("Адрес доставки:", delivery.to ? delivery.to : ""),
+    createDelivery("Ближайший завод:", delivery.from ? delivery.from : ""),
+    createDelivery("Количество миксеров", mixersCountString),
+    createDelivery("Расстояние до адреса:", `${delivery.distance} км.`),
+  ];
 
   return (
-    <div className="total">
-      <Fade in={qty > 0} style={{ transitionDelay: qty ? '300ms' : '0ms' }}>
-        <TableContainer sx={{ maxHeight: 440, width: "100%" }}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                <TableCell align="center" colSpan={4}>
-                  <span style={{ fontSize: '20px' }}>Бетон</span>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell
-                    key={column.id}
-                    align={column.align}
-                    style={{ minWidth: column.minWidth }}
-                  >
-                    {column.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow hover role="checkbox" tabIndex={-1}>
-                <TableCell align={"left"}><b>{betonName}</b></TableCell>
-                <TableCell align={"left"}>{`${qty} м3`}</TableCell>
-                <TableCell align={"right"}>{priceFormat((betonItem + antifreezeValue))}</TableCell>
-                <TableCell align={"right"}>{priceFormat((betonItem + antifreezeValue) * qty)}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Fade>
+    <><TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell align="center" colSpan={5}>
+              <span style={{ fontSize: '20px' }}>Расчет</span>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            {columns.map((column) => (
+              <TableCell
+                key={column.id}
+                align={column.align}
+                style={{ minWidth: column.minWidth }}
+              >
+                {column.label}
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {
+            pdfData.slice(1, pdfData.length - 1)
+              .map((item, idx) => <TableRow key={idx} hover role="checkbox" tabIndex={-1}>
+                <TableCell align={"left"}>{+item[0] >= DEFAULT_MAX_ID_VALUE ? "000000" : item[0]}</TableCell>
+                <TableCell align={"left"}>{item[1]}</TableCell>
+                <TableCell align={"left"}>{item[2]}</TableCell>
+                <TableCell align={"right"}>{item[3]}</TableCell>
+                <TableCell align={"right"}>{item[4]}</TableCell>
+              </TableRow>)
+          }
+          <TableRow className="table-total">
+            <TableCell colSpan={3}></TableCell>
+            <TableCell colSpan={1}>Адрес доставки:</TableCell>
+            <TableCell colSpan={1} align="right">{delivery.to}</TableCell>
+          </TableRow>
 
-      {deliveryStore?.price && remaind?.remaind && betonItem ?
-        <>
-          <ShopBetonDeliveryTotal deliveryStore={deliveryStore} remaind={remaind} price={deliveryStore.price} />
-          <div className="total-price" style={{ fontSize: "28px" }}>
-            <b>Итого:</b> {priceFormat(Object.values(amountPriceList).reduce((el, acc) => el += acc))}
-            </div>
-        </> : null
-      }
-    </div>
+
+          <TableRow className="table-total">
+            <TableCell colSpan={3}></TableCell>
+            <TableCell colSpan={1}>Ближайший завод:</TableCell>
+            <TableCell align="right">{delivery.from}</TableCell>
+          </TableRow>
+          <TableRow className="table-total">
+            <TableCell colSpan={3}></TableCell>
+            <TableCell colSpan={1}>Количество миксеров:</TableCell>
+            <TableCell colSpan={1} align="right">{mixersCountString}</TableCell>
+          </TableRow>
+          <TableRow className="table-total">
+            <TableCell colSpan={3}></TableCell>
+            <TableCell colSpan={1}>Расстояние до адреса:</TableCell>
+            <TableCell colSpan={1} align="right">{delivery.distance} км.</TableCell>
+          </TableRow>
+
+          <TableRow className="table-total">
+            <TableCell colSpan={3}></TableCell>
+            <TableCell colSpan={1} align={"right"}></TableCell>
+            <TableCell colSpan={1} align="right" style={{ fontSize: 24 }}>{<strong>Итого:</strong>} {priceFormat(totalPrice)}</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </TableContainer>
+      <ShopBetonPdfMake pdfData={pdfData} pdfDelivery={pdfDelivery} />
+    </>
   )
 }

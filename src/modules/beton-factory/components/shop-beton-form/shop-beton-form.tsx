@@ -1,43 +1,50 @@
-import { TextField, FormControlLabel, Switch, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Grow, Fade, FormHelperText } from '@mui/material';
+import { TextField, FormControlLabel, Switch, FormGroup, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { ChangeEvent, memo, useCallback, useEffect, useState } from 'react';
 import { ShopBetonSelect } from '../shop-beton-select/shop-beton-select';
-import { BetonPriceList, BetonTypes, antiFreeze, concreteType, typesBetonSelect, typesPumpBetonSelect } from '../../consts/mocks';
-import { changeAmountBeton, changeConcreteBeton, getAmountPriceList } from '../../store/action';
-import { RemaindType, getMixersCount } from '../../utils/utils';
+import { BetonPriceList, BetonTypes, betonIdList, concreteType, typesBetonSelect, typesPumpBetonSelect } from '../../consts/mocks';
+import { changeAmountBeton, changeConcreteBeton, getAmountPriceList, setDirty } from '../../store/action';
+import { RemaindType, getMixersCount, switchStyle } from '../../utils/utils';
 import MapComponent from '../map-component/map-component';
 import ShopBetonMixerSelect from '../shop-beton-mixer-select/shop-beton-mixer-select';
 import { debounce } from "lodash";
-import { ShopBetonFeatures } from '../shop-beton-features/shop-beton-features';
 import { BetonSelect, BetonTotal } from '../../types/types';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/hooks';
-import { ShopBetonTotalTable } from '../shop-beton-total-table/shop-beton-total-table';
 import petrovichImg from '../../../../assets/petrovich.svg';
 import { ShopBetonSwitchList } from '../shop-beton-switch-list/shop-beton-switch-list';
-import { ShopBetonPdfMake } from '../shop-beton-pdf-make/shop-beton-pdf-make';
+import { ShopBetonTotalTable } from '../shop-beton-total-table/shop-beton-total-table';
 import './shop-beton-form.scss';
 
-const COMPENSATOR_PRICE = 1750;
-const HYDROLOTOK = 3000;
+function getStringMixers(value: number) {
+  if (value >= 5) {
+    return `${value} единиц`
+  }
+
+  if (value === 1) {
+    return `${value} единица`
+  }
+
+  return `${value} единицы`
+}
 
 function ShopBetonForm(): JSX.Element {
   const [form, setForm] = useState(['', '', '', '']);
-  const [qty, setQty] = useState<null | number>(null);
+  const [, setQty] = useState<null | number>(null);
   const [checked, setChecked] = useState(false);
   const [remaind, setRemaind] = useState<RemaindType>();
   const [rentPupm, setRentPump] = useState(false);
   const [betonTypesList, setBetonTypesList] = useState<BetonSelect[]>(typesBetonSelect);
-  const [antifreezeState, setAntifreezeState] = useState(false);
-  const [antifreezeValue, setAntifreezeValue] = useState(0);
-
-  const [compensator, setCompensator] = useState<boolean>(false);
-  const [hydrolotok, setHydrolotok] = useState<boolean>(false);
-  const [hydrolotokCount, setHydrolotokCount] = useState<number | string>("1");
+  const [pumpValue, setPumpValue] = useState(992271);
+  const [technologyWashing, setTechnologyWashing] = useState(false);
+  const [additionalHoses, setAdditionalHoses] = useState<number | undefined>();
 
   const concreteBeton = useAppSelector(({ dataReducer }) => dataReducer.concreteBeton);
   const deliveryStore = useAppSelector(({ dataReducer }) => dataReducer.delivery);
   const amountBeton = useAppSelector(({ dataReducer }) => dataReducer.amountBeton);
   const shopMixers = useAppSelector(({ dataReducer }) => dataReducer.shopMixers);
   const amountPriceList = useAppSelector(({ dataReducer }) => dataReducer.amountPriceList);
+  const dirty = useAppSelector(({ dataReducer }) => dataReducer.dirty);
+
+  const servicesList = useAppSelector(({ dataReducer }) => dataReducer.services);
   const dispatch = useAppDispatch();
 
   const onChangeType = (id: number, value: string) => {
@@ -60,30 +67,31 @@ function ShopBetonForm(): JSX.Element {
     setChecked((prev) => (prev = evt.target.checked));
   };
 
-  const handleChangeAntifreeze = (evt: ChangeEvent<HTMLInputElement>) => {
-    setAntifreezeState((prev) => (prev = evt.target.checked));
+  const handleChangePupm = ({ target }: SelectChangeEvent) => {
+    setPumpValue((prevValue) => prevValue = Number(target.value));
   };
 
-  const handleChangeSelect = (event: SelectChangeEvent) => {
-    setAntifreezeValue((prev) => (prev = Number(event.target.value)));
+  const handleChangeTechnologyWashing = () => {
+    setTechnologyWashing((prev) => prev = !prev);
+  }
+
+  const handleChangeHoses = ({ target }: ChangeEvent<HTMLInputElement>) => {
+    if (target.value) {
+      setAdditionalHoses((prev) => prev = parseInt(target.value, 10));
+    } else {
+      setAdditionalHoses((prev) => prev = undefined);
+    }
   };
 
-
-  const priceListKey = form.join('');
-  const betonItem = BetonPriceList[priceListKey];
-
-  const compensatorPrice = compensator ? COMPENSATOR_PRICE : null;
-  const hydrolotokPrice = hydrolotok ? HYDROLOTOK : null;
+  const handleChangeDirty = () => {
+    if (!dirty) {
+      dispatch(setDirty(true));
+    };
+  };
 
   useEffect(() => {
-    if (betonItem && qty) {
-      dispatch(getAmountPriceList({
-        ...amountPriceList,
-        [BetonTotal.Beton]: (betonItem + antifreezeValue) * qty
-      }))
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [betonItem, dispatch, qty, antifreezeValue]);
+    setRemaind((prev) => (prev = getMixersCount(amountBeton, shopMixers)));
+  }, [amountBeton, shopMixers]);
 
   useEffect(() => {
     if (deliveryStore?.price && remaind?.remaind) {
@@ -110,12 +118,6 @@ function ShopBetonForm(): JSX.Element {
   }, [amountBeton, shopMixers]);
 
   useEffect(() => {
-    if (!antifreezeState) {
-      setAntifreezeValue((prev) => prev = 0);
-    }
-  }, [antifreezeState]);
-
-  useEffect(() => {
     if (rentPupm && concreteBeton === BetonTypes.WithoutPump) {
       setRentPump((prevPump) => !prevPump);
     }
@@ -126,163 +128,146 @@ function ShopBetonForm(): JSX.Element {
 
   }, [amountPriceList, concreteBeton, dispatch, rentPupm]);
 
+  const priceListKey = form.join('');
+  const betonItem = BetonPriceList[priceListKey];
+  const rentPupmId = rentPupm ? pumpValue : 0;
+  const remaindValue = remaind?.remaind ? remaind.remaind : 0;
+  const technologyWashingValue = technologyWashing ? 11500 : 0;
+  const hoses = additionalHoses ? additionalHoses : 0;
+
   return (
-    <div className="shop-beton">
+    <><div className="shop-beton" onClick={handleChangeDirty}>
       <div className="shop-beton-title"><h2>Расчет бетона</h2> <img src={petrovichImg} alt="" /></div>
       <form className="shop-beton-form">
-        <ShopBetonSelect {...concreteType} onChangeType={onChangeType} />
-        {betonTypesList.map((item) => <ShopBetonSelect key={item.id} {...item} onChangeType={onChangeType} />)}
-        <ShopBetonMixerSelect />
-        <div className="weight-field">
-          <div>
-            <TextField
-              disabled={!betonItem}
-              style={{ width: 150 }}
-              inputProps={{ min: 1, max: 200, step: 0.1 }}
-              id="outlined-number"
-              label="Объем"
-              type="number"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              onChange={handleChangeQty}
-            />
-            {!betonItem ?
-              <>
-                <FormHelperText>Выберите вид бетона
-                  <br />
-                  {concreteBeton !== BetonTypes.UnknownPump && form.join('') ?
-                    <span style={{ color: 'red' }}>Бетон {form.join('').replace('P', 'П').replace('225', '22.5')} <br />в ассортименте отсутствует</span> : null}
-                </FormHelperText>
-              </> : null}
+        <div className="shop-beton-select-wrapper">
+          <ShopBetonSelect {...concreteType} onChangeType={onChangeType} />
+          {betonTypesList.map((item) => <ShopBetonSelect key={item.id} {...item} onChangeType={onChangeType} />)}
+          <ShopBetonMixerSelect />
+          <div className="weight-field">
+            <div>
+              <div>
+                <TextField
+                  disabled={!betonItem}
+                  style={{ width: 150 }}
+                  inputProps={{ min: 1, max: 200, step: 0.1 }}
+                  id="outlined-number"
+                  label="Объем"
+                  type="number"
+                  onChange={handleChangeQty} />
 
-          </div>
-          <Fade in={remaind && remaind.remaind - amountBeton > 0} style={{ transitionDelay: remaind && remaind.remaind - amountBeton > 0 ? '300ms' : '0ms' }}>
-            <div className="remaind-title">
-              {remaind && remaind.remaind - amountBeton > 0 && betonItem ?
-                <p className="remaind-item">Пустые кубы бетона: {(remaind.remaind - amountBeton).toFixed(1)} м<sup>3</sup></p> : null}
-              <p className="remaind-item">Миксеры: {remaind?.mixers ? Object.entries(remaind.mixers).map(([key, value]) => value ? <span key={key}>
-                <span >({key} м<sup>3</sup> : {value} шт)</span> </span> : null) : null}</p>
+                {
+                  !betonItem && !form.includes('') ?
+                    <><br /><small style={{ color: "red" }}>
+                      Бетон {priceListKey.replace('P', 'П').replace('225', '22.5')} в ассортименте отсутствует
+                    </small></> : null
+                }
+
+                {
+                  remaind && remaind.remaind - amountBeton > 0 && betonItem ?
+                    <><br /><small className="text-message">
+                      Пустые кубы {remaind.remaind - amountBeton} м<sup>3</sup>
+                    </small></> : null
+                }
+                <br />
+                {
+                  remaind?.mixers && amountBeton && betonItem ?
+                    Object.entries(remaind.mixers).map(([key, value]) => {
+                      if (!value) {
+                        return null;
+                      }
+                      return <small key={key} className="text-message">Миксер {key}м<sup>3</sup>: {getStringMixers(value)}; <br /></small>
+                    }) : null
+                }
+              </div>
             </div>
-          </Fade>
+          </div>
         </div>
       </form>
 
       <div className="switch-block">
-
-        <div className="pump-toggle">
-          <FormControlLabel
-            value="End"
-            checked={compensator}
-            control={<Switch disabled={!qty} color="primary" onChange={(evt) => setCompensator(evt.target.checked)} />}
-            label="Аренда Гасителя"
-            labelPlacement="end"
-          />
-        </div>
-
-
-        <div className="hydrolotok-field" >
-          <FormControlLabel
-            value="End"
-            checked={hydrolotok}
-            control={<Switch disabled={!qty} color="primary" onChange={(evt) => setHydrolotok(evt.target.checked)} />}
-            label="Труба удлинитель"
-            labelPlacement="end"
-          />
-          <br />
-          {hydrolotok ?
-            <Grow
-              in={hydrolotok}
-              style={{ transformOrigin: '0 0 0' }}
-              {...(antifreezeState ? { timeout: 400 } : {})}
-            >
-              <TextField
-                inputProps={{ min: 1, max: 200 }}
-                id="hidro-lotok-number"
-                label="Количество"
-                type="number"
-                value={hydrolotokCount ? hydrolotokCount : ''}
-                helperText={hydrolotok ? "минимальное 1 ед." : null}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                onChange={(evt) => setHydrolotokCount(parseInt(evt.target.value, 10))}
-              />
-            </Grow> : null}
-        </div>
-
-
-
-        <div className="shop-beton-antifreeze">
-          <FormControlLabel
-            disabled={!amountBeton}
-            value="End"
-            control={<Switch color="primary" checked={antifreezeState} onChange={handleChangeAntifreeze} />}
-            label={"Антифриз"}
-            labelPlacement="end"
-          />
-          {
-            antifreezeState ?
-              <Grow
-                in={antifreezeState}
-                style={{ transformOrigin: '0 0 0' }}
-                {...(antifreezeState ? { timeout: 400 } : {})}
-              >
-                {<div className="shop-beton-select">
-                  <FormControl style={{ width: 150 }}>
-                    <InputLabel>{"Антифриз"}</InputLabel>
-                    <Select
-                      defaultValue={""}
-                      label={"Антифриз"}
-                      onChange={handleChangeSelect}
-                    >
-                      {antiFreeze.map((item) => <MenuItem value={item.price} key={item.id}>{item.label}
-                      </MenuItem>)}
-                    </Select>
-                  </FormControl>
-                </div>}
-              </Grow>
-              : null
-          }
-        </div>
-
+        <ShopBetonSwitchList hoses={hoses} amountBeton={amountBeton} />
         <div className="switch-delivery" style={{ marginBottom: !checked ? '20px' : '0' }}>
           <FormControlLabel disabled={!amountBeton}
             value="End"
-            control={<Switch color="primary" checked={checked} onChange={handleChange} />}
+            control={<Switch sx={switchStyle} color="primary" checked={checked} onChange={handleChange} />}
             label={!checked ? "Расчет доставки" : "Скрыть карту"}
-            labelPlacement="end"
-          />
+            labelPlacement="end" />
         </div>
-
-        <ShopBetonSwitchList amountBeton={amountBeton} />
-
         <MapComponent dnone={checked} />
         <FormControlLabel
           value="End"
-          control={<Switch color="primary" />}
+          control={<Switch sx={switchStyle} color="primary" />}
           label="Аренда бетононасоса"
           labelPlacement="end"
           disabled={concreteBeton === BetonTypes.UnknownPump || concreteBeton === BetonTypes.WithoutPump}
-          checked={rentPupm}
-        />
-        {
-          <ShopBetonFeatures
-            compensatorPrice={compensatorPrice}
-            hydrolotokPrice={hydrolotokPrice}
-            hydrolotokCount={hydrolotokCount} />
-        }
+          checked={rentPupm} />
       </div>
-      <ShopBetonTotalTable
-        qty={qty}
-        betonItem={betonItem}
-        form={form}
-        antifreezeValue={antifreezeValue}
-        remaind={remaind}
-      />
 
-      <ShopBetonPdfMake />
-    </div>
+      {rentPupm ?
+        <div className="shop-beton-switch-list">
+          <FormGroup className="shop-beton-switch-field">
+            <FormControlLabel control={<Switch sx={switchStyle} size='small'
+              checked={technologyWashing}
+              onChange={handleChangeTechnologyWashing} />}
+              label="Технологическая замывка" />
+          </FormGroup>
+
+          <div className="pumb-block">
+            <FormControl className="select-length-pump">
+              <InputLabel size='small' id="select-length-pump">Длина стрелы</InputLabel>
+              <Select
+                labelId="select-hoses"
+                id="select-length-pump-select"
+                label="Длина стрелы"
+                size='small'
+                value={pumpValue.toString()}
+                onChange={handleChangePupm}
+              >
+                <MenuItem value={992271}>Аренда АБН 24-28</MenuItem>
+                <MenuItem value={992272}>Аренда АБН 32-36</MenuItem>
+                <MenuItem value={992273}>Аренда АБН 40-42</MenuItem>
+
+                <MenuItem value={992274}>Аренда АБН 44-46</MenuItem>
+                <MenuItem value={992275}>Аренда АБН 48</MenuItem>
+                <MenuItem value={992276}>Аренда АБН 52</MenuItem>
+
+                <MenuItem value={992277}>Аренда АБН 55</MenuItem>
+                <MenuItem value={992278}>Аренда АБН 58</MenuItem>
+              </Select>
+            </FormControl>
+
+            <div>
+              <TextField
+                className="hoses-field"
+                id="hoses-field"
+                label="Дополнительные шланги"
+                type="number"
+                size="small"
+                value={additionalHoses ? additionalHoses : ""}
+                onChange={handleChangeHoses} />
+              <br />
+              {additionalHoses && additionalHoses <= 300 ?
+                <small>Максимальное количество 300 м.п.</small> :
+                <small>Неверное значение</small>}
+            </div>
+          </div>
+
+        </div> : null}
+
+      {betonItem && amountBeton ?
+        <ShopBetonTotalTable
+          betonId={betonIdList[priceListKey]}
+          betonItem={betonItem}
+          amountBeton={amountBeton}
+          betonName={priceListKey}
+          servicesList={servicesList}
+          rentPupmId={rentPupmId}
+          remaind={remaindValue}
+          technologyWashing={technologyWashingValue}
+          hoses={hoses}
+          mixers={remaind?.mixers}
+        /> : null}
+    </div></>
   )
 }
 
