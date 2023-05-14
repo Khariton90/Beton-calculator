@@ -246,9 +246,8 @@ function ShopBetonForm(): JSX.Element {
                 value={additionalHoses ? additionalHoses : ""}
                 onChange={handleChangeHoses} />
               <br />
-              {additionalHoses && additionalHoses <= 300 ?
-                <small>Максимальное количество 300 м.п.</small> :
-                <small>Неверное значение</small>}
+              {additionalHoses && additionalHoses > 300 ?
+                <small>Максимальное количество 300 м.п.</small> : null}
             </div>
           </div>
 

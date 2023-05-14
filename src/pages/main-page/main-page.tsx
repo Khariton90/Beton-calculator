@@ -7,7 +7,7 @@ import cuttImage from '../../assets/cutt.png';
 import handleBetonImage from '../../assets/handle-beton.png';
 import sandImage from '../../assets/sand.png';
 import stone2Image from '../../assets/stone2.png';
-import armstrongImage from '../../assets/armstrong.png';
+import fenceImage from '../../assets/fence_2.png';
 import { useNavigate } from 'react-router-dom';
 import { AppRoute } from '../../constants';
 import { useEffect } from 'react';
@@ -52,6 +52,25 @@ export function MainPage(): JSX.Element {
               <Typography variant="body2" color="text.secondary">
                 Сервис для расчета бетона с завода изготовителя.
                 Производит расчет бетона и доставку до адреса.
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+
+        <Card sx={{ maxWidth: 345 }}>
+          <CardActionArea>
+            <CardMedia
+              component="img"
+              height="250"
+              image={fenceImage}
+              alt="green iguana"
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+              Заборы и ограждения
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Сервис для расчета различных видов забора. Расчет количества материалов.
               </Typography>
             </CardContent>
           </CardActionArea>
@@ -169,25 +188,6 @@ export function MainPage(): JSX.Element {
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Сервис для расчета бетона для ручного замешивания. Расчет количества мешков.
-              </Typography>
-            </CardContent>
-          </CardActionArea>
-        </Card>
-
-        <Card sx={{ maxWidth: 345 }}>
-          <CardActionArea>
-            <CardMedia
-              component="img"
-              height="250"
-              image={armstrongImage}
-              alt="green iguana"
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                Потолки армстронг
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Сервис для расчета потолков армстронг. Расчет по размерам.
               </Typography>
             </CardContent>
           </CardActionArea>
