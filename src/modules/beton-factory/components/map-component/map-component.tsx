@@ -1,12 +1,12 @@
-import { RoutePanel, YMaps, Map } from "@pbe/react-yandex-maps";
+import { RoutePanel, YMaps, Map, RulerControl } from "@pbe/react-yandex-maps";
 import { useState, useEffect, memo } from "react";
 import { PlaceMarkComponent } from "../place-mark-component/place-mark-component";
 import { defaultMapCoords, defaultRoutePanel, plants } from "../../consts/mocks";
 import { getDelivery } from "../../store/action";
 import { distancePrice } from "../../consts/mocks";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/hooks";
 import cn from "classnames";
 import './map-component.scss';
-import { useAppDispatch, useAppSelector } from "../../../../hooks/hooks";
 import pin from '../../assets/pin.png';
 
 const getDistance = (route: any, cb: (value: number) => void) => {
@@ -79,14 +79,16 @@ function MapComponent({ dnone }: MapComponentProps): JSX.Element {
           <RoutePanel instanceRef={setPanel} options={defaultRoutePanel}>
             <div className={cn("search-img", { "active": plantLocation })}><img src={pin} alt="" width={28} height={28} /></div>
           </RoutePanel>
+
+          <RulerControl />
         </Map>
       </YMaps>
       {
-        distance ? 
-        <div className="map-footer">
-          <span>Расстояние: {distance} км </span>
+        distance ?
+          <div className="map-footer">
+            <span>Расстояние: {distance} км </span>
           </div>
-        : null
+          : null
       }
     </div>
   );
