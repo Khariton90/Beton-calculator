@@ -4,8 +4,8 @@ import { BetonTypes, antiFreeze } from '../../consts/mocks';
 import { ServiceName, ServiceStore, ServiceSwitch, Services } from '../../types/types';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/hooks';
 import { getBetonServices } from '../../store/action';
-import './shop-beton-switch-list.scss';
 import { switchStyle } from '../../utils/utils';
+import './shop-beton-switch-list.scss';
 
 const accessoriesList: ServiceSwitch[] = [
   {
@@ -26,7 +26,7 @@ const additivesList: ServiceSwitch[] = [
   {
     id: 1,
     name: ServiceName.Antifreeze,
-    label: "Антифриз",
+    label: "Пмд",
     value: 154,
   },
   {
@@ -122,13 +122,6 @@ export function ShopBetonSwitchList({ amountBeton, hoses }: ShopBetonSwitchListP
       qty: hydrolotokCount
     },
     {
-      id: 960999,
-      name: ServiceName.Launcher,
-      price: hoses >= 30 && concreteBeton === BetonTypes.Pump ? 4738 : 0,
-      total: hoses >= 30 && concreteBeton === BetonTypes.Pump ? 4738 : 0,
-      qty: hoses >= 30 && concreteBeton === BetonTypes.Pump ? 1 : 0
-    },
-    {
       id: antiFreeze[antifreezeId].id,
       name: ServiceName.Antifreeze,
       price: services[ServiceName.Antifreeze],
@@ -162,7 +155,14 @@ export function ShopBetonSwitchList({ amountBeton, hoses }: ShopBetonSwitchListP
       price: services[ServiceName.SchemaG],
       total: services[ServiceName.SchemaG] * amountBeton,
       qty: amountBeton
-    }
+    },
+    {
+      id: 960999,
+      name: ServiceName.Launcher,
+      price: hoses >= 30 && concreteBeton === BetonTypes.Pump ? 4738 : 0,
+      total: hoses >= 30 && concreteBeton === BetonTypes.Pump ? 4738 : 0,
+      qty: hoses >= 30 && concreteBeton === BetonTypes.Pump ? 1 : 0
+    },
   ] 
     dispatch(getBetonServices(servicesStore));
   // eslint-disable-next-line react-hooks/exhaustive-deps

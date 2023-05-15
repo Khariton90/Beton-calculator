@@ -194,3 +194,17 @@
     }
   }
 }
+
+.tech-switch {
+  position: relative;
+
+  & small {
+    position: absolute;
+    bottom: 2px;
+    left: -5px;
+    background-color: #ff6333af;
+    border-radius: 4px;
+    color: #FFF;
+    padding: 2px 12px;
+  }
+}

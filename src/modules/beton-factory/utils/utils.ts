@@ -48,3 +48,27 @@ export const switchStyle = {
     color: "#fc3"
   },
 }
+
+export const getStringMixers = (value: number) => {
+  if (value >= 5) {
+    return `${value} единиц`
+  }
+
+  if (value === 1) {
+    return `${value} единица`
+  }
+
+  return `${value} единицы`
+};
+
+export const getDistance = (route: any, cb: (value: number) => void) => {
+  route.model.setParams({ results: 1 }, true);
+  route.model.events.add('requestsuccess', function () {
+    const activeRoute = route.getActiveRoute();
+    if (activeRoute) {
+      const length = route.getActiveRoute().properties.get("distance");
+      const distance = Math.ceil(length.value / 1000);
+      cb(distance);
+    }
+  });
+};

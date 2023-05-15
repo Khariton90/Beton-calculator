@@ -8,18 +8,9 @@ import { useAppDispatch, useAppSelector } from "../../../../hooks/hooks";
 import cn from "classnames";
 import './map-component.scss';
 import pin from '../../assets/pin.png';
+import { getDistance } from "../../utils/utils";
 
-const getDistance = (route: any, cb: (value: number) => void) => {
-  route.model.setParams({ results: 1 }, true);
-  route.model.events.add('requestsuccess', function () {
-    const activeRoute = route.getActiveRoute();
-    if (activeRoute) {
-      const length = route.getActiveRoute().properties.get("distance");
-      const distance = Math.ceil(length.value / 1000);
-      cb(distance);
-    }
-  });
-};
+
 
 const key = "177ce460-adee-4e9d-9899-3cd38cedd130";
 const MAX_DELIVERY_DISTANCE = 200;

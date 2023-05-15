@@ -3,7 +3,7 @@ import { ChangeEvent, memo, useCallback, useEffect, useState } from 'react';
 import { ShopBetonSelect } from '../shop-beton-select/shop-beton-select';
 import { BetonPriceList, BetonTypes, betonIdList, concreteType, typesBetonSelect, typesPumpBetonSelect } from '../../consts/mocks';
 import { changeAmountBeton, changeConcreteBeton, getAmountPriceList, setDirty } from '../../store/action';
-import { RemaindType, getMixersCount, switchStyle } from '../../utils/utils';
+import { RemaindType, getMixersCount, getStringMixers, switchStyle } from '../../utils/utils';
 import MapComponent from '../map-component/map-component';
 import ShopBetonMixerSelect from '../shop-beton-mixer-select/shop-beton-mixer-select';
 import { debounce } from "lodash";
@@ -14,17 +14,7 @@ import { ShopBetonSwitchList } from '../shop-beton-switch-list/shop-beton-switch
 import { ShopBetonTotalTable } from '../shop-beton-total-table/shop-beton-total-table';
 import './shop-beton-form.scss';
 
-function getStringMixers(value: number) {
-  if (value >= 5) {
-    return `${value} единиц`
-  }
-
-  if (value === 1) {
-    return `${value} единица`
-  }
-
-  return `${value} единицы`
-}
+const TECH_WASHING_PRICE = 11500;
 
 function ShopBetonForm(): JSX.Element {
   const [form, setForm] = useState(['', '', '', '']);
@@ -132,12 +122,14 @@ function ShopBetonForm(): JSX.Element {
   const betonItem = BetonPriceList[priceListKey];
   const rentPupmId = rentPupm ? pumpValue : 0;
   const remaindValue = remaind?.remaind ? remaind.remaind : 0;
-  const technologyWashingValue = technologyWashing ? 11500 : 0;
+  const technologyWashingValue = technologyWashing ? TECH_WASHING_PRICE : 0;
   const hoses = additionalHoses ? additionalHoses : 0;
 
   return (
     <><div className="shop-beton" onClick={handleChangeDirty}>
-      <div className="shop-beton-title"><h2>Расчет бетона</h2> <img src={petrovichImg} alt="" /></div>
+      <div className="shop-beton-title">
+        <h2>Расчет бетона</h2> <img src={petrovichImg} alt="petrovich" />
+      </div>
       <form className="shop-beton-form">
         <div className="shop-beton-select-wrapper">
           <ShopBetonSelect {...concreteType} onChangeType={onChangeType} />
@@ -148,7 +140,7 @@ function ShopBetonForm(): JSX.Element {
               <div>
                 <TextField
                   disabled={!betonItem}
-                  style={{ width: 150 }}
+                  style={{ width: 150, marginBottom: 10 }}
                   inputProps={{ min: 1, max: 200, step: 0.1 }}
                   id="outlined-number"
                   label="Объем"
@@ -205,12 +197,16 @@ function ShopBetonForm(): JSX.Element {
 
       {rentPupm ?
         <div className="shop-beton-switch-list">
-          <FormGroup className="shop-beton-switch-field">
-            <FormControlLabel control={<Switch sx={switchStyle} size='small'
-              checked={technologyWashing}
-              onChange={handleChangeTechnologyWashing} />}
-              label="Технологическая замывка" />
-          </FormGroup>
+          <div className="tech-switch">
+            <FormGroup className="shop-beton-switch-field">
+              <FormControlLabel control={<Switch sx={switchStyle} size='small'
+                checked={technologyWashing}
+                onChange={handleChangeTechnologyWashing} />}
+                label="Технологическая замывка"
+              />
+            </FormGroup>
+            <small>Уточнить возможность на заводе</small>
+          </div>
 
           <div className="pumb-block">
             <FormControl className="select-length-pump">

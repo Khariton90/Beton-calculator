@@ -5,6 +5,9 @@ import { Delivery, PdfDto, ServiceName, ServiceStore } from "../../types/types";
 import { useAppSelector } from "../../../../hooks/hooks";
 import { ShopBetonPdfMake } from "../shop-beton-pdf-make/shop-beton-pdf-make";
 
+const MIXER_LAUNCH = 9;
+const THIRTY_HOSES = 30;
+
 interface Column {
   id: 'id' | 'name' | 'qty' | 'price' | 'amount';
   label: string;
@@ -14,9 +17,18 @@ interface Column {
 }
 
 const columns: readonly Column[] = [
-  { id: 'id', label: 'Код', },
-  { id: 'name', label: 'Название', },
-  { id: 'qty', label: 'Количество', },
+  {
+    id: 'id',
+    label: 'Код',
+  },
+  {
+    id: 'name',
+    label: 'Название',
+  },
+  {
+    id: 'qty',
+    label: 'Количество',
+  },
   {
     id: 'price',
     label: 'Цена',
@@ -32,12 +44,12 @@ const columns: readonly Column[] = [
 const tableNames = {
   [ServiceName.Compensator]: "Аренда гасителя",
   [ServiceName.Hydrolotok]: "Труба-удлинитель",
-  [ServiceName.Antifreeze]: "Антифриз",
+  [ServiceName.Antifreeze]: "Противоморозная добавка",
   [ServiceName.Stone]: "Щебень 5-10мм",
   [ServiceName.Fibro]: "Фиброволокно",
   [ServiceName.MasterTop]: "«Мастер ТОП»",
   [ServiceName.SchemaG]: "«Схема Г»",
-  [ServiceName.Launcher]: "Миксер с пусковым раствором",
+  [ServiceName.Launcher]: "Пусковой раствор",
 };
 
 const arrowNames: { [key: number]: string } = {
@@ -82,12 +94,12 @@ const getPumpData = (delivery: Delivery, rentPupmId: number, amountBeton: number
   }
 };
 
-function createData(id: number | string, name: string, qty: number, price: number, total: number) {
+function createData(id: number | string, name: string, qty: number, price: number, total: number, unit: string = "") {
   if (!qty || !total) {
     return [];
   }
 
-  return [id.toString(), name, `${qty} ед.`, priceFormat(price), priceFormat(total)];
+  return [id.toString(), name, `${qty} ${unit}`, priceFormat(price), priceFormat(total)];
 };
 
 function createDelivery(name: string, value: string) {
@@ -107,7 +119,17 @@ type ShopBetonTotalTableProps = {
   mixers: { [key: string]: number } | undefined;
 }
 
-export function ShopBetonTotalTable({ betonId, betonItem, amountBeton, betonName, servicesList, rentPupmId, remaind, technologyWashing, hoses, mixers }: ShopBetonTotalTableProps): JSX.Element {
+export function ShopBetonTotalTable({ 
+  betonId, 
+  betonItem, 
+  amountBeton, 
+  betonName, 
+  servicesList, 
+  rentPupmId, 
+  remaind, 
+  technologyWashing, 
+  hoses, 
+  mixers }: ShopBetonTotalTableProps): JSX.Element {
   const filteredServices = servicesList.filter((item) => item.price);
   const totalList = filteredServices.length ? filteredServices.reduce((acc, el) => el.total + acc, 0) : 0;
   const delivery = useAppSelector(({ dataReducer }) => dataReducer.delivery);
@@ -124,11 +146,12 @@ export function ShopBetonTotalTable({ betonId, betonItem, amountBeton, betonName
     return <></>
   }
 
+  const deliveryLauncherPrice = hoses >= THIRTY_HOSES ? distancePrice[delivery.distance] * MIXER_LAUNCH : 0;
   const pumpTotal = rentPupmId ? getPumpData(delivery, rentPupmId, amountBeton).total : 0;
   const priceDelivery = distancePrice[delivery.distance] * remaind;
-  const hosesTotal = hoses * 350;
+  const totalHoses = 350 * hoses;
   const totalPrice = concreteBeton === BetonTypes.Pump ?
-    totalList + costFibroPump + priceDelivery + pumpTotal + hosesTotal + technologyWashing + amountBeton * betonItem :
+    totalList + costFibroPump + priceDelivery + pumpTotal + totalHoses + technologyWashing + amountBeton * betonItem + deliveryLauncherPrice :
     totalList + priceDelivery + amountBeton * betonItem;
 
   const filteredString = filteredServices.map(({ id, name, qty, price, total }) => {
@@ -136,22 +159,26 @@ export function ShopBetonTotalTable({ betonId, betonItem, amountBeton, betonName
     return [stringID, tableNames[name], `${qty} ед.`, priceFormat(price), priceFormat(total)];
   });
 
-  const totalHoses = 350 * hoses;
   const totalBeton = amountBeton * betonItem;
   const pumpData = pumpTotal ? Object.values(getPumpData(delivery, rentPupmId, amountBeton))
     .map((item, idx, arr) => idx === arr.length - 1 ? priceFormat(+item) : item.toString()) : [];
 
-  const mixersCountString = JSON.stringify(mixers).replace("}", "").replace("{", "");
+  const mixersCountString = mixers ? Object.entries(mixers).map(([key, value]) => value ? `${key}м3 - ${value}шт; ` : "").join("") : "";
 
   const pdfData: PdfDto[] = [
     ["Код", "Название", "Кол-во", "Цена", "Всего"],
-    createData(betonId, `Бетон ${betonName.replace('P', 'П').replace('225', '22,5')}`, amountBeton, betonItem, totalBeton),
-    createData(992270, "Доставка бетона", 1, priceDelivery, priceDelivery),
+    createData(betonId, `Бетон ${betonName.replace('P', 'П').replace('225', '22,5')}`, amountBeton, betonItem, totalBeton, "м3"),
+    createData(992270, "Доставка бетона", 1, priceDelivery, priceDelivery, "ед."),
     pumpData,
     ...filteredString,
-    concreteBeton === BetonTypes.Pump ? createData("000000", "Технологическая замывка", 1, technologyWashing, technologyWashing) : [],
-    concreteBeton === BetonTypes.Pump ? createData("000000", "Дополнительные шланги", hoses, 350, totalHoses) : [],
-    concreteBeton === BetonTypes.Pump ? createData("000000", "Прокачка бетона с фиброй", amountBeton, 350, costFibroPump) : [],
+    concreteBeton === BetonTypes.Pump && 
+    deliveryLauncherPrice ? createData("000000", "Доставка пускового раствора", 1, deliveryLauncherPrice, deliveryLauncherPrice, "ед.") : [],
+    concreteBeton === BetonTypes.Pump ? 
+    createData("000000", "Дополнительные шланги", hoses, 350, totalHoses, "м.п.") : [],
+    concreteBeton === BetonTypes.Pump ? 
+    createData("000000", "Технологическая замывка", 1, technologyWashing, technologyWashing, "ед.") : [],
+    concreteBeton === BetonTypes.Pump ? 
+    createData("000000", "Прокачка бетона с фиброй", amountBeton, 350, costFibroPump, "м3") : [],
     ['', '', '', 'Итого:', priceFormat(totalPrice)]
   ].filter((el) => el.length);
 
@@ -199,8 +226,6 @@ export function ShopBetonTotalTable({ betonId, betonItem, amountBeton, betonName
             <TableCell colSpan={1}>Адрес доставки:</TableCell>
             <TableCell colSpan={1} align="right">{delivery.to}</TableCell>
           </TableRow>
-
-
           <TableRow className="table-total">
             <TableCell colSpan={3}></TableCell>
             <TableCell colSpan={1}>Ближайший завод:</TableCell>
@@ -220,7 +245,9 @@ export function ShopBetonTotalTable({ betonId, betonItem, amountBeton, betonName
           <TableRow className="table-total">
             <TableCell colSpan={3}></TableCell>
             <TableCell colSpan={1} align={"right"}></TableCell>
-            <TableCell colSpan={1} align="right" style={{ fontSize: 24 }}>{<strong>Итого:</strong>} {priceFormat(totalPrice)}</TableCell>
+            <TableCell colSpan={1} align="right" style={{ fontSize: 24 }}>
+              {<strong>Итого:</strong>} {priceFormat(totalPrice)}
+            </TableCell>
           </TableRow>
         </TableBody>
       </Table>
