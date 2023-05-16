@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { pdfSvgLine } from "../../consts/mocks";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/hooks";
 import { getPdfList, setDirty } from "../../store/action";
-import { PdfDto } from "../../types/types";
+import { Client, PdfDto } from "../../types/types";
 import dayjs from 'dayjs';
 import './shop-beton-pdf-make.scss';
 
@@ -13,10 +13,11 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 type ShopBetonPdfMakeProps = {
   pdfData: PdfDto[],
-  pdfDelivery: string[][]
+  pdfDelivery: string[][],
+  client: Client
 }
 
-export function ShopBetonPdfMake({pdfData, pdfDelivery}: ShopBetonPdfMakeProps): JSX.Element {
+export function ShopBetonPdfMake({ pdfData, pdfDelivery, client }: ShopBetonPdfMakeProps): JSX.Element {
   const [url, setUrl] = useState<any>(null);
   const dispatch = useAppDispatch();
   const dirty = useAppSelector(({dataReducer}) => dataReducer.dirty);
@@ -52,6 +53,18 @@ export function ShopBetonPdfMake({pdfData, pdfDelivery}: ShopBetonPdfMakeProps):
           widths: [200, 286],
           body: [
             ...pdfDelivery.map((el) => [...el])
+          ]
+        }
+      },
+      {text: "Контакты:", style: 'subheader'},
+      {
+        style: "table",
+        table: {
+          headerRows: 1,
+          widths: [200, 286],
+          body: [
+            ["Телефон", client.telephone],
+            ["ФИО", client.client]
           ]
         }
       },

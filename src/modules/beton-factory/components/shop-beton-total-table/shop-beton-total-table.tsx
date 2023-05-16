@@ -1,9 +1,11 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
 import { BetonTypes, DEFAULT_MAX_ID_VALUE, arrowNewPrice, arrowPriceMoreThanLimit, distancePrice } from "../../consts/mocks"
 import { getFillingHours, priceFormat } from "../../utils/utils"
-import { Delivery, PdfDto, ServiceName, ServiceStore } from "../../types/types";
+import { Client, Delivery, PdfDto, ServiceName, ServiceStore } from "../../types/types";
 import { useAppSelector } from "../../../../hooks/hooks";
 import { ShopBetonPdfMake } from "../shop-beton-pdf-make/shop-beton-pdf-make";
+import ShopBetonUserForm from "../shop-beton-user-form/shop-beton-user-form";
+import { useState } from "react";
 
 const MIXER_LAUNCH = 9;
 const THIRTY_HOSES = 30;
@@ -138,6 +140,17 @@ export function ShopBetonTotalTable({
 
   const concreteBeton = useAppSelector(({ dataReducer }) => dataReducer.concreteBeton);
 
+  const [client, setClient] = useState<Client>({
+    telephone: "",
+    client: ""
+  });
+
+  const onChangeUserForm = (form: Client) => {
+    setClient({
+      ...form,
+    });
+  };
+
   if (!delivery) {
     return <></>
   }
@@ -183,10 +196,10 @@ export function ShopBetonTotalTable({
   ].filter((el) => el.length);
 
   const pdfDelivery: string[][] = [
-    createDelivery("Адрес доставки:", delivery.to ? delivery.to : ""),
-    createDelivery("Ближайший завод:", delivery.from ? delivery.from : ""),
+    createDelivery("Адрес доставки", delivery.to ? delivery.to : ""),
+    createDelivery("Ближайший завод", delivery.from ? delivery.from : ""),
     createDelivery("Количество миксеров", mixersCountString),
-    createDelivery("Расстояние до адреса:", `${delivery.distance} км.`),
+    createDelivery("Расстояние до адреса", `${delivery.distance} км.`),
   ];
 
   return (
@@ -252,7 +265,8 @@ export function ShopBetonTotalTable({
         </TableBody>
       </Table>
     </TableContainer>
-      <ShopBetonPdfMake pdfData={pdfData} pdfDelivery={pdfDelivery} />
+    <ShopBetonUserForm onChangeUserForm={onChangeUserForm} client={client}/>
+      <ShopBetonPdfMake pdfData={pdfData} pdfDelivery={pdfDelivery} client={client}/>
     </>
   )
 }
