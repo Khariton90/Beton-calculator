@@ -1,6 +1,5 @@
 import { Card, CardActionArea, CardMedia, CardContent, Typography } from '@mui/material';
-import './main-page.scss';
-import mixerImage from '../../assets/craiyon_171437_beton_auto_mixer.png'
+import mixerImage from '../../assets/beaton-1.png'
 import doorImage from '../../assets/craiyon_172634_door_and_calculator.png';
 import radiatorImage from '../../assets/4b09e1f9d1d344f4a5230fda2783490e.jpg';
 import cuttImage from '../../assets/cutt.png';
@@ -13,6 +12,7 @@ import { AppRoute } from '../../constants';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 import { getDelivery } from '../../modules/beton-factory/store/action';
+import './main-page.scss';
 
 export function MainPage(): JSX.Element {
   const navigate = useNavigate();

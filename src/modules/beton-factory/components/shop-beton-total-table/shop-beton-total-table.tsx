@@ -1,14 +1,11 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
-import { BetonTypes, DEFAULT_MAX_ID_VALUE, arrowNewPrice, arrowPriceMoreThanLimit, distancePrice } from "../../consts/mocks"
+import { BetonTypes, DEFAULT_MAX_ID_VALUE, MIXER_LAUNCH, THIRTY_HOSES, arrowNewPrice, arrowPriceMoreThanLimit, distancePrice } from "../../consts/mocks"
 import { getFillingHours, priceFormat } from "../../utils/utils"
 import { Client, Delivery, PdfDto, ServiceName, ServiceStore } from "../../types/types";
 import { useAppSelector } from "../../../../hooks/hooks";
 import { ShopBetonPdfMake } from "../shop-beton-pdf-make/shop-beton-pdf-make";
 import ShopBetonUserForm from "../shop-beton-user-form/shop-beton-user-form";
 import { useState } from "react";
-
-const MIXER_LAUNCH = 9;
-const THIRTY_HOSES = 30;
 
 interface Column {
   id: 'id' | 'name' | 'qty' | 'price' | 'amount';
@@ -121,16 +118,16 @@ type ShopBetonTotalTableProps = {
   mixers: { [key: string]: number } | undefined;
 }
 
-export function ShopBetonTotalTable({ 
-  betonId, 
-  betonItem, 
-  amountBeton, 
-  betonName, 
-  servicesList, 
-  rentPupmId, 
-  remaind, 
-  technologyWashing, 
-  hoses, 
+export function ShopBetonTotalTable({
+  betonId,
+  betonItem,
+  amountBeton,
+  betonName,
+  servicesList,
+  rentPupmId,
+  remaind,
+  technologyWashing,
+  hoses,
   mixers }: ShopBetonTotalTableProps): JSX.Element {
   const filteredServices = servicesList.filter((item) => item.price);
   const totalList = filteredServices.length ? filteredServices.reduce((acc, el) => el.total + acc, 0) : 0;
@@ -142,7 +139,8 @@ export function ShopBetonTotalTable({
 
   const [client, setClient] = useState<Client>({
     telephone: "",
-    client: ""
+    client: "",
+    comment: ""
   });
 
   const onChangeUserForm = (form: Client) => {
@@ -184,14 +182,14 @@ export function ShopBetonTotalTable({
     createData(992270, "Доставка бетона", 1, priceDelivery, priceDelivery, "ед."),
     pumpData,
     ...filteredString,
-    concreteBeton === BetonTypes.Pump && 
-    deliveryLauncherPrice ? createData("000000", "Доставка пускового раствора", 1, deliveryLauncherPrice, deliveryLauncherPrice, "ед.") : [],
-    concreteBeton === BetonTypes.Pump ? 
-    createData("000000", "Дополнительные шланги", hoses, 350, totalHoses, "м.п.") : [],
-    concreteBeton === BetonTypes.Pump ? 
-    createData("000000", "Технологическая замывка", 1, technologyWashing, technologyWashing, "ед.") : [],
-    concreteBeton === BetonTypes.Pump ? 
-    createData("000000", "Прокачка бетона с фиброй", amountBeton, 350, costFibroPump, "м3") : [],
+    concreteBeton === BetonTypes.Pump &&
+      deliveryLauncherPrice ? createData("000000", "Доставка пускового раствора", 1, deliveryLauncherPrice, deliveryLauncherPrice, "ед.") : [],
+    concreteBeton === BetonTypes.Pump ?
+      createData("000000", "Дополнительные шланги", hoses, 350, totalHoses, "м.п.") : [],
+    concreteBeton === BetonTypes.Pump ?
+      createData("000000", "Технологическая замывка", 1, technologyWashing, technologyWashing, "ед.") : [],
+    concreteBeton === BetonTypes.Pump ?
+      createData("000000", "Прокачка бетона с фиброй", amountBeton, 350, costFibroPump, "м3") : [],
     ['', '', '', 'Итого:', priceFormat(totalPrice)]
   ].filter((el) => el.length);
 
@@ -265,8 +263,8 @@ export function ShopBetonTotalTable({
         </TableBody>
       </Table>
     </TableContainer>
-    <ShopBetonUserForm onChangeUserForm={onChangeUserForm} client={client}/>
-      <ShopBetonPdfMake pdfData={pdfData} pdfDelivery={pdfDelivery} client={client}/>
+      <ShopBetonUserForm onChangeUserForm={onChangeUserForm} client={client} />
+      <ShopBetonPdfMake pdfData={pdfData} pdfDelivery={pdfDelivery} client={client} />
     </>
   )
 }

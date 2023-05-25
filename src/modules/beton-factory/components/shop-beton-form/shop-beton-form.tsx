@@ -1,7 +1,7 @@
 import { TextField, FormControlLabel, Switch, FormGroup, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { ChangeEvent, memo, useCallback, useEffect, useState } from 'react';
 import { ShopBetonSelect } from '../shop-beton-select/shop-beton-select';
-import { BetonPriceList, BetonTypes, betonIdList, concreteType, typesBetonSelect, typesPumpBetonSelect } from '../../consts/mocks';
+import { BetonPriceList, BetonTypes, TECH_WASHING_PRICE, betonIdList, concreteType, typesBetonSelect, typesPumpBetonSelect } from '../../consts/mocks';
 import { changeAmountBeton, changeConcreteBeton, getAmountPriceList, setDirty } from '../../store/action';
 import { RemaindType, getMixersCount, getStringMixers, switchStyle } from '../../utils/utils';
 import MapComponent from '../map-component/map-component';
@@ -13,8 +13,6 @@ import petrovichImg from '../../../../assets/petrovich.svg';
 import { ShopBetonSwitchList } from '../shop-beton-switch-list/shop-beton-switch-list';
 import { ShopBetonTotalTable } from '../shop-beton-total-table/shop-beton-total-table';
 import './shop-beton-form.scss';
-
-const TECH_WASHING_PRICE = 11500;
 
 function ShopBetonForm(): JSX.Element {
   const [form, setForm] = useState(['', '', '', '']);
@@ -150,7 +148,9 @@ function ShopBetonForm(): JSX.Element {
                 {
                   !betonItem && !form.includes('') ?
                     <><br /><small style={{ color: "red" }}>
-                      Бетон {priceListKey.replace('P', 'П').replace('225', '22.5')} в ассортименте отсутствует
+                      Бетон {priceListKey
+                        .replace('P', 'П')
+                        .replace('225', '22.5')} в ассортименте отсутствует
                     </small></> : null
                 }
 
@@ -167,7 +167,11 @@ function ShopBetonForm(): JSX.Element {
                       if (!value) {
                         return null;
                       }
-                      return <small key={key} className="text-message">Миксер {key}м<sup>3</sup>: {getStringMixers(value)}; <br /></small>
+                      return <small
+                        key={key}
+                        className="text-message">
+                        Миксер {key}м<sup>3</sup>: {getStringMixers(value)}; <br />
+                      </small>
                     }) : null
                 }
               </div>
@@ -222,11 +226,9 @@ function ShopBetonForm(): JSX.Element {
                 <MenuItem value={992271}>Аренда АБН 24-28</MenuItem>
                 <MenuItem value={992272}>Аренда АБН 32-36</MenuItem>
                 <MenuItem value={992273}>Аренда АБН 40-42</MenuItem>
-
                 <MenuItem value={992274}>Аренда АБН 44-46</MenuItem>
                 <MenuItem value={992275}>Аренда АБН 48</MenuItem>
                 <MenuItem value={992276}>Аренда АБН 52</MenuItem>
-
                 <MenuItem value={992277}>Аренда АБН 55</MenuItem>
                 <MenuItem value={992278}>Аренда АБН 58</MenuItem>
               </Select>

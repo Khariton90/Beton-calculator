@@ -5,6 +5,7 @@ import Input from '@mui/material/Input';
 import FormControl from '@mui/material/FormControl';
 import { ChangeEvent } from 'react';
 import { Client } from '../../types/types';
+import Textarea from '@mui/joy/Textarea';
 import './shop-beton-user-form.scss';
 
 interface CustomProps {
@@ -35,9 +36,9 @@ type ShopBetonUserFormProps = {
   onChangeUserForm: (form: Client) => void;
 }
 
-export default function ShopBetonUserForm({onChangeUserForm, client}: ShopBetonUserFormProps) {
+export default function ShopBetonUserForm({ onChangeUserForm, client }: ShopBetonUserFormProps) {
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     onChangeUserForm({
       ...client,
       [event.target.name]: event.target.value,
@@ -46,11 +47,10 @@ export default function ShopBetonUserForm({onChangeUserForm, client}: ShopBetonU
   };
 
   return (
-    <div  className="shop-beton-user-form">
+    <div className="shop-beton-user-form">
       <h3>Контакты:</h3>
       <Box className="user-form-box">
-      <Input
-          
+        <Input
           autoComplete="off"
           value={client.telephone}
           onChange={handleChange}
@@ -59,19 +59,28 @@ export default function ShopBetonUserForm({onChangeUserForm, client}: ShopBetonU
           id="formatted-text-mask-input"
           inputComponent={TextMaskCustom as any}
         />
-      <FormControl variant="standard">
-      <Input
-        autoComplete="off"
-        name="client"
-        placeholder="ФИО"
-        type="text"
-        value={client.client}
-        onChange={handleChange}
-      />
-      </FormControl>
-    </Box>
-    <p>Телефон: {client.telephone}</p>
-    <p>ФИО: {client.client}</p>
+        <FormControl variant="standard">
+          <Input
+            autoComplete="off"
+            name="client"
+            placeholder="ФИО"
+            type="text"
+            value={client.client}
+            onChange={handleChange}
+          />
+        </FormControl>
+
+        <Textarea
+          onChange={handleChange}
+          name="comment"
+          className="order-text"
+          minRows={6}
+          value={client.comment}
+          placeholder="Комментарий"
+        />
+      </Box>
+      <p>Телефон: {client.telephone}</p>
+      <p>ФИО: {client.client}</p>
     </div>
   );
 }

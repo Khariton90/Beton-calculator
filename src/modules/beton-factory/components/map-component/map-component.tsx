@@ -5,12 +5,10 @@ import { defaultMapCoords, defaultRoutePanel, plants } from "../../consts/mocks"
 import { getDelivery } from "../../store/action";
 import { distancePrice } from "../../consts/mocks";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/hooks";
+import { getDistance } from "../../utils/utils";
 import cn from "classnames";
 import './map-component.scss';
 import pin from '../../assets/pin.png';
-import { getDistance } from "../../utils/utils";
-
-
 
 const key = "177ce460-adee-4e9d-9899-3cd38cedd130";
 const MAX_DELIVERY_DISTANCE = 200;
@@ -63,14 +61,22 @@ function MapComponent({ dnone }: MapComponentProps): JSX.Element {
   return (
     <div className={cn("map")} style={!dnone ? { display: "none" } : {}}>
       <YMaps query={{ apikey: key }}>
-        <Map defaultState={defaultMapCoords} width={"100%"} height={"600px"}>
+        <Map
+          defaultState={defaultMapCoords}
+          width={"100%"}
+          height={"600px"}>
           {plants.map((el) =>
-            <PlaceMarkComponent key={el.id} placeMarkItem={el} onChangePlant={onChangePlant} plantLocation={plantLocation} />
+            <PlaceMarkComponent
+              key={el.id}
+              placeMarkItem={el}
+              onChangePlant={onChangePlant}
+              plantLocation={plantLocation} />
           )}
           <RoutePanel instanceRef={setPanel} options={defaultRoutePanel}>
-            <div className={cn("search-img", { "active": plantLocation })}><img src={pin} alt="" width={28} height={28} /></div>
+            <div className={cn("search-img", { "active": plantLocation })}>
+              <img src={pin} alt="search" width={28} height={28} />
+            </div>
           </RoutePanel>
-
           <RulerControl />
         </Map>
       </YMaps>

@@ -127,4 +127,5 @@ export type PdfDto = string[];
 export type Client = {
   telephone: string;
   client: string;
+  comment: string;
 };

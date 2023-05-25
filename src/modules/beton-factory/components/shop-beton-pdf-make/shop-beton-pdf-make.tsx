@@ -20,8 +20,8 @@ type ShopBetonPdfMakeProps = {
 export function ShopBetonPdfMake({ pdfData, pdfDelivery, client }: ShopBetonPdfMakeProps): JSX.Element {
   const [url, setUrl] = useState<any>(null);
   const dispatch = useAppDispatch();
-  const dirty = useAppSelector(({dataReducer}) => dataReducer.dirty);
-  
+  const dirty = useAppSelector(({ dataReducer }) => dataReducer.dirty);
+
   const docDefinition = {
     content: [
       {
@@ -30,22 +30,28 @@ export function ShopBetonPdfMake({ pdfData, pdfDelivery, client }: ShopBetonPdfM
       },
       {
         toc: {
-          title: {text: `Расчет бетона от ${dayjs().format('DD.MM.YYYY')}.`, style: 'header'}
+          title: {
+            text: `Расчет бетона от ${dayjs().format('DD.MM.YYYY')}.`,
+            style: 'header'
+          }
         }
       },
-      {text: "Услуги:", style: 'subheader'},
+      { text: "Услуги:", style: 'subheader' },
       {
         layout: 'lightVerticalLines',
         style: "table",
         table: {
           headerRows: 1,
-          widths: [20, 50, 180, 70, 70, 60 ],
+          widths: [20, 50, 180, 70, 70, 60],
           body: [
             ...pdfData.map((el, idx) => [idx && idx < pdfData.length - 1 ? idx.toString() : "", ...el]),
           ]
         }
       },
-      {text: "Доставка:", style: 'subheader'},
+      {
+        text: "Доставка:",
+        style: 'subheader'
+      },
       {
         style: "table",
         table: {
@@ -56,7 +62,10 @@ export function ShopBetonPdfMake({ pdfData, pdfDelivery, client }: ShopBetonPdfM
           ]
         }
       },
-      {text: "Контакты:", style: 'subheader'},
+      {
+        text: "Контакты:",
+        style: 'subheader'
+      },
       {
         style: "table",
         table: {
@@ -64,12 +73,23 @@ export function ShopBetonPdfMake({ pdfData, pdfDelivery, client }: ShopBetonPdfM
           widths: [200, 286],
           body: [
             ["Телефон", client.telephone],
-            ["ФИО", client.client]
+            ["ФИО", client.client],
           ]
         }
       },
       {
-        text: "Уважаемые Пользователи, для продолжения оформления Заказа на аренду спецтехники, Вам необходимо уточнить у клиента, будут ли на объекте заливки предусмотрены подъездные пути, условия для разгрузки, а также место для замывки автобетононасоса.",
+        style: "table",
+        table: {
+          headerRows: 1,
+          widths: [200, 286],
+          body: [
+            ["Комментарий", client.comment],
+          ]
+        }
+      },
+      {
+        text: `Уважаемые Пользователи, для продолжения оформления Заказа на аренду спецтехники, Вам необходимо уточнить у клиента, 
+        будут ли на объекте заливки предусмотрены подъездные пути, условия для разгрузки, а также место для замывки автобетононасоса.`,
         style: 'footer'
       }
     ],
@@ -77,11 +97,11 @@ export function ShopBetonPdfMake({ pdfData, pdfDelivery, client }: ShopBetonPdfM
       header: {
         fontSize: 18,
         bold: true,
-        marginTop:10,
-        marginBottom:5,
+        marginTop: 10,
+        marginBottom: 5,
       },
       table: {
-        marginBottom:20,
+        marginBottom: 20,
       },
       subheader: {
         fontSize: 14,
@@ -108,15 +128,16 @@ export function ShopBetonPdfMake({ pdfData, pdfDelivery, client }: ShopBetonPdfM
   useEffect(() => {
     dispatch(setDirty(false));
     dispatch(getPdfList(pdfData))
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, url]);
 
   return (
     <div className="shop-beton-pdf">
       <Button variant="contained" onClick={createPdf}>Сохранить</Button>
       {
-        url && !dirty ? <Button variant="contained" target="_blank" href={url}>Распечатать</Button>  :
-        <Button disabled variant="contained">Распечатать</Button> 
+        url && !dirty ?
+          <Button variant="contained" target="_blank" href={url}>Распечатать</Button> :
+          <Button disabled variant="contained">Распечатать</Button>
       }
     </div>
   )
