@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/Beton-calculator/static/css/main.7c3d7b5d.css",
-    "main.js": "/Beton-calculator/static/js/main.3a051edc.js",
+    "main.css": "/Beton-calculator/static/css/main.0ce0bd3f.css",
+    "main.js": "/Beton-calculator/static/js/main.f4a64d2e.js",
     "static/media/stone2.png": "/Beton-calculator/static/media/stone2.1160cdce8d0c54493a94.png",
     "static/media/sand.png": "/Beton-calculator/static/media/sand.cdcd8645ee28def58ba1.png",
     "static/media/beaton-1.png": "/Beton-calculator/static/media/beaton-1.8bdf3fba354e50e6d1cf.png",
@@ -13,11 +13,11 @@
     "static/media/pin.png": "/Beton-calculator/static/media/pin.520530caedce90c48fad.png",
     "static/media/petrovich.svg": "/Beton-calculator/static/media/petrovich.807a9b07ef1df034280d133f6ff35731.svg",
     "index.html": "/Beton-calculator/index.html",
-    "main.7c3d7b5d.css.map": "/Beton-calculator/static/css/main.7c3d7b5d.css.map",
-    "main.3a051edc.js.map": "/Beton-calculator/static/js/main.3a051edc.js.map"
+    "main.0ce0bd3f.css.map": "/Beton-calculator/static/css/main.0ce0bd3f.css.map",
+    "main.f4a64d2e.js.map": "/Beton-calculator/static/js/main.f4a64d2e.js.map"
   },
   "entrypoints": [
-    "static/css/main.7c3d7b5d.css",
-    "static/js/main.3a051edc.js"
+    "static/css/main.0ce0bd3f.css",
+    "static/js/main.f4a64d2e.js"
   ]
 }
