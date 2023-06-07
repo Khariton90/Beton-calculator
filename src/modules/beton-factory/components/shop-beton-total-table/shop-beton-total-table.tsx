@@ -60,6 +60,8 @@ const arrowNames: { [key: number]: string } = {
   992276: "Аренда АБН 52",
   992277: "Аренда АБН 55",
   992278: "Аренда АБН 58",
+  1000050: "Аренда АБН 16-24(ПУМИ)",
+  1000051: "Аренда АБН 28-32(ПУМИ)",
 };
 
 
@@ -133,7 +135,7 @@ export function ShopBetonTotalTable({
   const totalList = filteredServices.length ? filteredServices.reduce((acc, el) => el.total + acc, 0) : 0;
   const delivery = useAppSelector(({ dataReducer }) => dataReducer.delivery);
   const fibroItem = filteredServices.find((item) => item.name === ServiceName.Fibro);
-  const costFibroPump = fibroItem ? amountBeton * 350 : 0;
+  const costFibroPump = fibroItem ? amountBeton * 360 : 0;
 
   const concreteBeton = useAppSelector(({ dataReducer }) => dataReducer.concreteBeton);
 
@@ -189,7 +191,7 @@ export function ShopBetonTotalTable({
     concreteBeton === BetonTypes.Pump ?
       createData("000000", "Технологическая замывка", 1, technologyWashing, technologyWashing, "ед.") : [],
     concreteBeton === BetonTypes.Pump ?
-      createData("000000", "Прокачка бетона с фиброй", amountBeton, 350, costFibroPump, "м3") : [],
+      createData("000000", "Прокачка бетона с фиброй", amountBeton, 360, costFibroPump, "м3") : [],
     ['', '', '', 'Итого:', priceFormat(totalPrice)]
   ].filter((el) => el.length);
 

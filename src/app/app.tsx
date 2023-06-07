@@ -5,6 +5,7 @@ import { LoginPage } from '../pages/login-page/login-page';
 import { PrivateRoute } from '../components/private-route';
 import { useAppSelector } from '../hooks/hooks';
 import { MainPage } from '../pages/main-page/main-page';
+import { CuttCardPage } from '../pages/cutt-card-page/cutt-card-page';
 
 export function App() {
   const autorizationStatus = useAppSelector(({ rootReducer }) => rootReducer.authorizationStatus);
@@ -14,8 +15,13 @@ export function App() {
         <Route path={AppRoute.Main} element={<PrivateRoute autorizationStatus={autorizationStatus}>
           <MainPage />
         </PrivateRoute>} />
+        
         <Route path={AppRoute.BetonFactory} element={<PrivateRoute autorizationStatus={autorizationStatus}>
           <BetonFactoryPage />
+        </PrivateRoute>} />
+
+        <Route path={AppRoute.CuttCard} element={<PrivateRoute autorizationStatus={autorizationStatus}>
+          <CuttCardPage />
         </PrivateRoute>} />
         <Route path={AppRoute.Login} element={<LoginPage />} />
       </Routes>

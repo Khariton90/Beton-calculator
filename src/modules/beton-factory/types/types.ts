@@ -56,7 +56,9 @@ export type BetonSelect = {
 }
 
 export enum PumpArrow {
+  PumiSixteen = "16-24",
   TwentyFour = "24-28",
+  PumiTwentyEight = "28-32",
   ThirtyTwo = "32-36",
   Fourty = "40-42",
   FortyFour = "44-46",

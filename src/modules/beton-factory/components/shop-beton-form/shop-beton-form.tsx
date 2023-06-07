@@ -231,6 +231,8 @@ function ShopBetonForm(): JSX.Element {
                 <MenuItem value={992276}>Аренда АБН 52</MenuItem>
                 <MenuItem value={992277}>Аренда АБН 55</MenuItem>
                 <MenuItem value={992278}>Аренда АБН 58</MenuItem>
+                <MenuItem value={1000050}>Аренда АБН 16-24(ПУМИ)</MenuItem>
+                <MenuItem value={1000051}>Аренда АБН 28-32(ПУМИ)</MenuItem>
               </Select>
             </FormControl>
 

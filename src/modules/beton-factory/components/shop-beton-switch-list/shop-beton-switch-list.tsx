@@ -33,13 +33,13 @@ const additivesList: ServiceSwitch[] = [
     id: 2,
     name: ServiceName.Stone,
     label: "Щебень 5-10 мм",
-    value: 300,
+    value: 330,
   },
   {
     id: 3,
     name: ServiceName.Fibro,
     label: "Фиброволокно",
-    value: 70,
+    value: 75,
   },
 ];
 
@@ -48,13 +48,13 @@ const otherList: ServiceSwitch[] = [
     id: 1,
     name: ServiceName.MasterTop,
     label: "«Мастер ТОП»",
-    value: 100,
+    value: 150,
   },
   {
     id: 2,
     name: ServiceName.SchemaG,
     label: "«Схема Г»",
-    value: 100,
+    value: 150,
   }
 ];
 
